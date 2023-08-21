@@ -16,12 +16,12 @@
   <meta name="author" content="Li zhihao">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言在工作中巧合遇到了Oracle表高水平位的问题，在此之前并没有学习了解过该问题，于是搜索了许多资料，看见了这篇解读很不错，故转载记录下来。 Oracle-HWM(High Water Mark) 高水位解读读前须知：Oracle的逻辑存储管理  ORACLE在逻辑存储上分4个粒度 ，由大到小为: 表空间, 段, 区 和 块.   块Block 块:是粒度最小的存储单位,现在标准的块大小是8K,">
+    <meta name="description" content="前言今天在工作中遇到一个数据不算多但是查询很慢的表，导致了其他关联业务出错，一开始很疑惑，查找了资料以及询问了同事，确定了应该是表高水平位的问题。 在此之前并没有学习了解过该问题，于是搜索了许多资料，看见了这篇解读很不错，故转载记录下来 Oracle-HWM(High Water Mark) 高水位解读读前须知：Oracle的逻辑存储管理  ORACLE在逻辑存储上分4个粒度 ，由大到小为: 表空">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Oracle-HWM高水位解读">
 <meta property="og:url" content="http://example.com/2023/08/20/Oracle-HWM%E9%AB%98%E6%B0%B4%E4%BD%8D%E8%A7%A3%E8%AF%BB/index.html">
 <meta property="og:site_name" content="Lizhihao&#39;s Blog">
-<meta property="og:description" content="前言在工作中巧合遇到了Oracle表高水平位的问题，在此之前并没有学习了解过该问题，于是搜索了许多资料，看见了这篇解读很不错，故转载记录下来。 Oracle-HWM(High Water Mark) 高水位解读读前须知：Oracle的逻辑存储管理  ORACLE在逻辑存储上分4个粒度 ，由大到小为: 表空间, 段, 区 和 块.   块Block 块:是粒度最小的存储单位,现在标准的块大小是8K,">
+<meta property="og:description" content="前言今天在工作中遇到一个数据不算多但是查询很慢的表，导致了其他关联业务出错，一开始很疑惑，查找了资料以及询问了同事，确定了应该是表高水平位的问题。 在此之前并没有学习了解过该问题，于是搜索了许多资料，看见了这篇解读很不错，故转载记录下来 Oracle-HWM(High Water Mark) 高水位解读读前须知：Oracle的逻辑存储管理  ORACLE在逻辑存储上分4个粒度 ，由大到小为: 表空">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/97aee2e6726950de9fc3ffb5440babc3.png">
 <meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/91990da12f13dbb045676b54a62bf254.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/c3406fdc5da5c7287e1b743d05c00f82.png">
 <meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/a7f635ef83b3321301b5897db5ddb157.png">
 <meta property="article:published_time" content="2023-08-20T11:13:38.000Z">
-<meta property="article:modified_time" content="2023-08-20T11:15:20.951Z">
+<meta property="article:modified_time" content="2023-08-21T15:31:34.924Z">
 <meta property="article:author" content="Li zhihao">
 <meta property="article:tag" content="Oracle表高水位">
 <meta name="twitter:card" content="summary_large_image">
@@ -229,7 +229,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          9.2k 字
+          9.3k 字
         
       </span>
     
@@ -240,7 +240,7 @@
         
         
         
-          77 分钟
+          78 分钟
         
       </span>
     
@@ -282,7 +282,8 @@
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中巧合遇到了Oracle表高水平位的问题，在此之前并没有学习了解过该问题，于是搜索了许多资料，看见了这篇解读很不错，故转载记录下来。</p>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天在工作中遇到一个数据不算多但是查询很慢的表，导致了其他关联业务出错，一开始很疑惑，查找了资料以及询问了同事，确定了应该是表高水平位的问题。</p>
+<p>在此之前并没有学习了解过该问题，于是搜索了许多资料，看见了这篇解读很不错，故转载记录下来</p>
 <h2 id="Oracle-HWM-High-Water-Mark-高水位解读"><a href="#Oracle-HWM-High-Water-Mark-高水位解读" class="headerlink" title="Oracle-HWM(High Water Mark) 高水位解读"></a>Oracle-HWM(High Water Mark) 高水位解读</h2><h1 id="读前须知：Oracle的逻辑存储管理"><a href="#读前须知：Oracle的逻辑存储管理" class="headerlink" title="读前须知：Oracle的逻辑存储管理"></a>读前须知：Oracle的逻辑存储管理</h1><hr>
 <p> ORACLE在逻辑存储上分4个粒度 ，由大到小为: 表空间, 段, 区 和 块. </p>
 <hr>
