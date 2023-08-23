@@ -7,10 +7,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Li zhihao">
@@ -23,20 +25,20 @@
 <meta property="og:site_name" content="Lizhihao&#39;s Blog">
 <meta property="og:description" content="前言今天在工作中遇到一个数据不算多但是查询很慢的表，导致了其他关联业务出错，一开始很疑惑，查找了资料以及询问了同事，确定了应该是表高水平位的问题。 在此之前并没有学习了解过该问题，于是搜索了许多资料，看见了这篇解读很不错，故转载记录下来 Oracle-HWM(High Water Mark) 高水位解读读前须知：Oracle的逻辑存储管理  ORACLE在逻辑存储上分4个粒度 ，由大到小为: 表空">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/97aee2e6726950de9fc3ffb5440babc3.png">
-<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/91990da12f13dbb045676b54a62bf254.png">
-<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/b0a6a9c66cf9f80153279b86358337c1.png">
-<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/39af1ff0e4ce6acc7f6f2e5cbef1b58f.png">
-<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/5100b5843ea21ff67a52a7d558c3fb32.png">
-<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/8679932a32ce4b119bd8351f1f4386a3.png">
-<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/c3406fdc5da5c7287e1b743d05c00f82.png">
-<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/a7f635ef83b3321301b5897db5ddb157.png">
+<meta property="og:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D1.jpg">
+<meta property="og:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D2.jpg">
+<meta property="og:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D3.jpg">
+<meta property="og:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D4.jpg">
+<meta property="og:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D5.jpg">
+<meta property="og:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D6.jpg">
+<meta property="og:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D8.jpg">
+<meta property="og:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D7.jpg">
 <meta property="article:published_time" content="2023-08-20T11:13:38.000Z">
-<meta property="article:modified_time" content="2023-08-21T15:31:34.924Z">
+<meta property="article:modified_time" content="2023-08-23T15:54:39.584Z">
 <meta property="article:author" content="Li zhihao">
 <meta property="article:tag" content="Oracle表高水位">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ask.qcloudimg.com/http-save/yehe-8916337/97aee2e6726950de9fc3ffb5440babc3.png">
+<meta name="twitter:image" content="http://example.com/images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D1.jpg">
   
   
   
@@ -165,18 +167,6 @@
             </li>
           
         
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
         
           <li class="nav-item" id="search-btn">
             <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
@@ -229,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          9.3k 字
+          9k 字
         
       </span>
     
@@ -240,7 +230,7 @@
         
         
         
-          78 分钟
+          75 分钟
         
       </span>
     
@@ -289,7 +279,11 @@
 <hr>
 <h2 id="块Block"><a href="#块Block" class="headerlink" title="块Block"></a>块Block</h2><p> 块:是粒度最小的存储单位,现在标准的块大小是8K,ORACLE每一次I&#x2F;O操作也是按块来操作的,也就是说当ORACLE从数据文件读数据时,是读取多少个块,而不是多少行. 每一个Block里可以包含多个row. </p>
 <p>数据块的大小是通过kb字节个数来指定的，默认为8KB。相关参数为db_block_size</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; show parameter db_block_size<br><br><span class="hljs-variable constant_">NAME</span>                                 <span class="hljs-variable constant_">TYPE</span>        <span class="hljs-variable constant_">VALUE</span><br>----------------------- --------------------- ---------<br>db_block_size                        integer     <span class="hljs-number">8192</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; show parameter db_block_size
+
+<span class="hljs-variable constant_">NAME</span>                                 <span class="hljs-variable constant_">TYPE</span>        <span class="hljs-variable constant_">VALUE</span>
+----------------------- --------------------- ---------
+db_block_size                        integer     <span class="hljs-number">8192</span></code></pre></div>
 
 <p>复制</p>
 <hr>
@@ -309,7 +303,7 @@
 <h2 id="表空间Tablespace"><a href="#表空间Tablespace" class="headerlink" title="表空间Tablespace"></a>表空间Tablespace</h2><p>TableSpace是存储结构中的最高层结构。建立一个表空间的时候，是需要指定存储的文件。一个表空间可以指定多个数据文件，多个文件可以在不同的物理存储上。也就是说，表空间是可以跨物理存储的。</p>
 <p>但是有一点就是，表空间下一级对象数据段的存储，是不能指定存储在那个文件里的。所以，要想让数据对象访问IO<a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/clb?from_column=20065&from=20065">负载均衡</a>，需要指定不同的数据对象在不同的表空间里。这也就是为什么将数据表和索引建立在不同的表空间的原因。</p>
 <p>表空间通过v$tablespace进行访问 </p>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-8916337/97aee2e6726950de9fc3ffb5440babc3.png" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p><img src="/../images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D1.jpg" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
 <p>其中两个参数需要注意一下。</p>
 <p>一个是bigfile，是一个标志位，标志表空间是不是所谓的大文件表空间。</p>
 <blockquote>
@@ -368,42 +362,133 @@
 <h2 id="当用直接路径插入行时，即使HWM以下有空闲的数据库块，键入在插入数据时使用了append关键字，则在插入时使用HWM以上的数据块，此时HWM会自动增大。"><a href="#当用直接路径插入行时，即使HWM以下有空闲的数据库块，键入在插入数据时使用了append关键字，则在插入时使用HWM以上的数据块，此时HWM会自动增大。" class="headerlink" title="当用直接路径插入行时，即使HWM以下有空闲的数据库块，键入在插入数据时使用了append关键字，则在插入时使用HWM以上的数据块，此时HWM会自动增大。"></a>当用直接路径插入行时，即使HWM以下有空闲的数据库块，键入在插入数据时使用了append关键字，则在插入时使用HWM以上的数据块，此时HWM会自动增大。</h2><p>例如，通过直接加载插入（用 APPEND 提示插入）或通过 SQL*LOADER 直接路径 数据块直接置于 HWM 之上。它下面的空间就浪费掉了。</p>
 <hr>
 <h1 id="栗子"><a href="#栗子" class="headerlink" title="栗子"></a>栗子</h1><p>数据库版本 Connected to Oracle Database 11g Enterprise Edition Release <strong>11.2.0.4.0</strong> </p>
-<h2 id="创建测试表"><a href="#创建测试表" class="headerlink" title="创建测试表"></a>创建测试表</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; create table <span class="hljs-title function_">tt</span>(id number);<br><br><span class="hljs-title class_">Table</span> created<br></code></pre></td></tr></table></figure>
+<h2 id="创建测试表"><a href="#创建测试表" class="headerlink" title="创建测试表"></a>创建测试表</h2><div class="code-wrapper"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; create table <span class="hljs-title function_">tt</span>(id number);
+
+<span class="hljs-title class_">Table</span> created</code></pre></div>
 
 <p>复制</p>
 <p>此时表没有分析，是原始的数据，即8个数据块。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript">--空的<br><span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  a  <span class="hljs-variable constant_">WHERE</span> a.<span class="hljs-property">segment_name</span> = <span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><span class="hljs-variable constant_">SEGMENT_NAME</span>                                                  <span class="hljs-variable constant_">SEGMENT_TYPE</span>     <span class="hljs-variable constant_">BLOCKS</span><br>-------------------------------------------------------------------------------- ------------------ ----------<br> --空的<br><span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><span class="hljs-variable constant_">TABLE_NAME</span>         <span class="hljs-variable constant_">NUM_ROWS</span>     <span class="hljs-variable constant_">BLOCKS</span> <span class="hljs-variable constant_">EMPTY_BLOCKS</span><br>------------------------------ ---------- ---------- ------------<br><span class="hljs-variable constant_">TT</span>                                                 <br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs javascript">--空的
+<span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  a  <span class="hljs-variable constant_">WHERE</span> a.<span class="hljs-property">segment_name</span> = <span class="hljs-string">&#x27;TT&#x27;</span>;
+
+<span class="hljs-variable constant_">SEGMENT_NAME</span>                                                  <span class="hljs-variable constant_">SEGMENT_TYPE</span>     <span class="hljs-variable constant_">BLOCKS</span>
+-------------------------------------------------------------------------------- ------------------ ----------
+ --空的
+<span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;
+
+<span class="hljs-variable constant_">TABLE_NAME</span>         <span class="hljs-variable constant_">NUM_ROWS</span>     <span class="hljs-variable constant_">BLOCKS</span> <span class="hljs-variable constant_">EMPTY_BLOCKS</span>
+------------------------------ ---------- ---------- ------------
+<span class="hljs-variable constant_">TT</span></code></pre></div>
 
 <p>复制</p>
-<h2 id="向表中插入一些测试数据"><a href="#向表中插入一些测试数据" class="headerlink" title="向表中插入一些测试数据"></a>向表中插入一些测试数据</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; declare<br>  <span class="hljs-number">2</span>    i number;<br>  <span class="hljs-number">3</span>  begin<br>  <span class="hljs-number">4</span>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span> .. <span class="hljs-number">10000</span> loop<br>  <span class="hljs-number">5</span>      insert into tt values (i);<br>  <span class="hljs-number">6</span>    end loop;<br>  <span class="hljs-number">7</span>    commit;<br>  <span class="hljs-number">8</span>  end;<br>  <span class="hljs-number">9</span>  /<br><br><span class="hljs-variable constant_">PL</span>/<span class="hljs-variable constant_">SQL</span> procedure successfully completed<br></code></pre></td></tr></table></figure>
+<h2 id="向表中插入一些测试数据"><a href="#向表中插入一些测试数据" class="headerlink" title="向表中插入一些测试数据"></a>向表中插入一些测试数据</h2><div class="code-wrapper"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; declare
+  <span class="hljs-number">2</span>    i number;
+  <span class="hljs-number">3</span>  begin
+  <span class="hljs-number">4</span>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span> .. <span class="hljs-number">10000</span> loop
+  <span class="hljs-number">5</span>      insert into tt values (i);
+  <span class="hljs-number">6</span>    end loop;
+  <span class="hljs-number">7</span>    commit;
+  <span class="hljs-number">8</span>  end;
+  <span class="hljs-number">9</span>  /
+
+<span class="hljs-variable constant_">PL</span>/<span class="hljs-variable constant_">SQL</span> procedure successfully completed</code></pre></div>
 
 <p>复制</p>
-<h2 id="重新查询表的信息"><a href="#重新查询表的信息" class="headerlink" title="重新查询表的信息"></a>重新查询表的信息</h2><p><img src="https://ask.qcloudimg.com/http-save/yehe-8916337/91990da12f13dbb045676b54a62bf254.png" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<h2 id="重新查询表的信息"><a href="#重新查询表的信息" class="headerlink" title="重新查询表的信息"></a>重新查询表的信息</h2><p><img src="/../images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D2.jpg" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
 <p>此时表TT 占用的块已经是24个了.</p>
 <p>但是user_tables 显示的信息还是为空。 因为没有做统计分析。</p>
-<h2 id="收集统计信息"><a href="#收集统计信息" class="headerlink" title="收集统计信息"></a>收集统计信息</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt;  exec <span class="hljs-variable constant_">DBMS_STATS</span>.<span class="hljs-title function_">GATHER_TABLE_STATS</span>(user,<span class="hljs-string">&#x27;TT&#x27;</span>);<br><br><span class="hljs-variable constant_">PL</span>/<span class="hljs-variable constant_">SQL</span> procedure successfully completed<br></code></pre></td></tr></table></figure>
+<h2 id="收集统计信息"><a href="#收集统计信息" class="headerlink" title="收集统计信息"></a>收集统计信息</h2><div class="code-wrapper"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt;  exec <span class="hljs-variable constant_">DBMS_STATS</span>.<span class="hljs-title function_">GATHER_TABLE_STATS</span>(user,<span class="hljs-string">&#x27;TT&#x27;</span>);
+
+<span class="hljs-variable constant_">PL</span>/<span class="hljs-variable constant_">SQL</span> procedure successfully completed</code></pre></div>
 
 <p>复制</p>
 <p>再此查询一下</p>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-8916337/b0a6a9c66cf9f80153279b86358337c1.png" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p><img src="/../images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D3.jpg" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
 <p>此时user_tables 已经有了数据，显示的使用了20个数据块。 但是empty_blocks 还是为空。 这里要注意的地方。 empty_blocks 这个字段只有使用analyze 收集统计信息之后才会有数据。</p>
 <hr>
-<h2 id="使用analyze搜集统计信息"><a href="#使用analyze搜集统计信息" class="headerlink" title="使用analyze搜集统计信息"></a>使用analyze搜集统计信息</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; analyze table tt compute statistics;<br><br><span class="hljs-title class_">Table</span> analyzed<br></code></pre></td></tr></table></figure>
+<h2 id="使用analyze搜集统计信息"><a href="#使用analyze搜集统计信息" class="headerlink" title="使用analyze搜集统计信息"></a>使用analyze搜集统计信息</h2><div class="code-wrapper"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; analyze table tt compute statistics;
+
+<span class="hljs-title class_">Table</span> analyzed</code></pre></div>
 
 <p>复制</p>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-8916337/39af1ff0e4ce6acc7f6f2e5cbef1b58f.png" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
-<h2 id="delete-数据，不会降低高水位"><a href="#delete-数据，不会降低高水位" class="headerlink" title="delete 数据，不会降低高水位"></a>delete 数据，不会降低高水位</h2><p><img src="https://ask.qcloudimg.com/http-save/yehe-8916337/5100b5843ea21ff67a52a7d558c3fb32.png" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-8916337/8679932a32ce4b119bd8351f1f4386a3.png" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p><img src="/../images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D4.jpg" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<h2 id="delete-数据，不会降低高水位"><a href="#delete-数据，不会降低高水位" class="headerlink" title="delete 数据，不会降低高水位"></a>delete 数据，不会降低高水位</h2><p><img src="/../images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D5.jpg" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p><img src="/../images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D6.jpg" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
 <p>可以发现 分析前后，blocks 和 empty_blocks 都没有发生变化。</p>
 <hr>
-<h2 id="truncate-表，可以降低高水位"><a href="#truncate-表，可以降低高水位" class="headerlink" title="truncate 表，可以降低高水位"></a>truncate 表，可以降低高水位</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs javascript">--truncate 表<br><span class="hljs-variable constant_">SQL</span>&gt; truncate table tt;<br><br><span class="hljs-title class_">Table</span> truncated<br><br><br>--查询段信息，blocks由<span class="hljs-number">24</span>降到了<span class="hljs-number">8</span><br><span class="hljs-variable constant_">SQL</span>&gt;  <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  <span class="hljs-variable constant_">WHERE</span> segment_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><span class="hljs-variable constant_">SEGMENT_NAME</span>       <span class="hljs-variable constant_">SEGMENT_TYPE</span>     <span class="hljs-variable constant_">BLOCKS</span><br>---------         ----------       ----------<br><span class="hljs-variable constant_">TT</span>                  <span class="hljs-variable constant_">TABLE</span>            <span class="hljs-number">8</span><br><br>--查询表信息，没有改变<br><span class="hljs-variable constant_">SQL</span>&gt;   <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><br><span class="hljs-variable constant_">TABLE_NAME</span>    <span class="hljs-variable constant_">NUM_ROWS</span>    <span class="hljs-variable constant_">BLOCKS</span>    <span class="hljs-variable constant_">EMPTY_BLOCKS</span><br>--------     ----------    ------     ------<br><span class="hljs-variable constant_">TT</span>                 <span class="hljs-number">0</span>         <span class="hljs-number">20</span>         <span class="hljs-number">4</span><br><br><br>------------------------------------------------------------<br>------------------------------------------------------------<br><br><br> --收集下表信息<br><span class="hljs-variable constant_">SQL</span>&gt;  exec dbms_stats.<span class="hljs-title function_">gather_table_stats</span>(user,<span class="hljs-string">&#x27;TT&#x27;</span>);<br><br><span class="hljs-variable constant_">PL</span>/<span class="hljs-variable constant_">SQL</span> procedure successfully completed<br><br>--重新统计下段信息，一样<br><span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  <span class="hljs-variable constant_">WHERE</span> segment_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><span class="hljs-variable constant_">SEGMENT_NAME</span>       <span class="hljs-variable constant_">SEGMENT_TYPE</span>     <span class="hljs-variable constant_">BLOCKS</span><br>---------         ----------       ----------<br><span class="hljs-variable constant_">TT</span>                  <span class="hljs-variable constant_">TABLE</span>            <span class="hljs-number">8</span><br><br>--重新查询表信息 <span class="hljs-variable constant_">BLOCKS</span> 由<span class="hljs-number">20</span>降为<span class="hljs-number">0</span>， 但是empyt_blocks 还是<span class="hljs-number">4</span>个<br><span class="hljs-variable constant_">SQL</span>&gt;  <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><span class="hljs-variable constant_">TABLE_NAME</span>  <span class="hljs-variable constant_">NUM_ROWS</span>     <span class="hljs-variable constant_">BLOCKS</span>       <span class="hljs-variable constant_">EMPTY_BLOCKS</span><br>---------- -----       ----------   ------------<br><span class="hljs-variable constant_">TT</span>           <span class="hljs-number">0</span>             <span class="hljs-number">0</span>            <span class="hljs-number">4</span><br><br><br>--analyze 分析下 更改<span class="hljs-variable constant_">EMPTY_BLOCKS</span>的值<br><span class="hljs-variable constant_">SQL</span>&gt; analyze table tt compute statistics;<br><br><span class="hljs-title class_">Table</span> analyzed<br><br> --重新查询段信息，<br><span class="hljs-variable constant_">SQL</span>&gt;  <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  <span class="hljs-variable constant_">WHERE</span> segment_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><span class="hljs-variable constant_">SEGMENT_NAME</span>       <span class="hljs-variable constant_">SEGMENT_TYPE</span>     <span class="hljs-variable constant_">BLOCKS</span><br>---------         ----------       ----------<br><span class="hljs-variable constant_">TT</span>                  <span class="hljs-variable constant_">TABLE</span>            <span class="hljs-number">8</span><br><br> --重新查询表信息<br><span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><span class="hljs-variable constant_">TABLE_NAME</span>  <span class="hljs-variable constant_">NUM_ROWS</span>     <span class="hljs-variable constant_">BLOCKS</span>       <span class="hljs-variable constant_">EMPTY_BLOCKS</span><br>---------- -----       ----------   ------------<br><span class="hljs-variable constant_">TT</span>           <span class="hljs-number">0</span>             <span class="hljs-number">0</span>            <span class="hljs-number">8</span><br><br><span class="hljs-variable constant_">SQL</span>&gt; <br></code></pre></td></tr></table></figure>
+<h2 id="truncate-表，可以降低高水位"><a href="#truncate-表，可以降低高水位" class="headerlink" title="truncate 表，可以降低高水位"></a>truncate 表，可以降低高水位</h2><div class="code-wrapper"><pre><code class="hljs javascript">--truncate 表
+<span class="hljs-variable constant_">SQL</span>&gt; truncate table tt;
+
+<span class="hljs-title class_">Table</span> truncated
+
+
+--查询段信息，blocks由<span class="hljs-number">24</span>降到了<span class="hljs-number">8</span>
+<span class="hljs-variable constant_">SQL</span>&gt;  <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  <span class="hljs-variable constant_">WHERE</span> segment_name=<span class="hljs-string">&#x27;TT&#x27;</span>;
+
+<span class="hljs-variable constant_">SEGMENT_NAME</span>       <span class="hljs-variable constant_">SEGMENT_TYPE</span>     <span class="hljs-variable constant_">BLOCKS</span>
+---------         ----------       ----------
+<span class="hljs-variable constant_">TT</span>                  <span class="hljs-variable constant_">TABLE</span>            <span class="hljs-number">8</span>
+
+--查询表信息，没有改变
+<span class="hljs-variable constant_">SQL</span>&gt;   <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;
+
+
+<span class="hljs-variable constant_">TABLE_NAME</span>    <span class="hljs-variable constant_">NUM_ROWS</span>    <span class="hljs-variable constant_">BLOCKS</span>    <span class="hljs-variable constant_">EMPTY_BLOCKS</span>
+--------     ----------    ------     ------
+<span class="hljs-variable constant_">TT</span>                 <span class="hljs-number">0</span>         <span class="hljs-number">20</span>         <span class="hljs-number">4</span>
+
+
+------------------------------------------------------------
+------------------------------------------------------------
+
+
+ --收集下表信息
+<span class="hljs-variable constant_">SQL</span>&gt;  exec dbms_stats.<span class="hljs-title function_">gather_table_stats</span>(user,<span class="hljs-string">&#x27;TT&#x27;</span>);
+
+<span class="hljs-variable constant_">PL</span>/<span class="hljs-variable constant_">SQL</span> procedure successfully completed
+
+--重新统计下段信息，一样
+<span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  <span class="hljs-variable constant_">WHERE</span> segment_name=<span class="hljs-string">&#x27;TT&#x27;</span>;
+
+<span class="hljs-variable constant_">SEGMENT_NAME</span>       <span class="hljs-variable constant_">SEGMENT_TYPE</span>     <span class="hljs-variable constant_">BLOCKS</span>
+---------         ----------       ----------
+<span class="hljs-variable constant_">TT</span>                  <span class="hljs-variable constant_">TABLE</span>            <span class="hljs-number">8</span>
+
+--重新查询表信息 <span class="hljs-variable constant_">BLOCKS</span> 由<span class="hljs-number">20</span>降为<span class="hljs-number">0</span>， 但是empyt_blocks 还是<span class="hljs-number">4</span>个
+<span class="hljs-variable constant_">SQL</span>&gt;  <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;
+
+<span class="hljs-variable constant_">TABLE_NAME</span>  <span class="hljs-variable constant_">NUM_ROWS</span>     <span class="hljs-variable constant_">BLOCKS</span>       <span class="hljs-variable constant_">EMPTY_BLOCKS</span>
+---------- -----       ----------   ------------
+<span class="hljs-variable constant_">TT</span>           <span class="hljs-number">0</span>             <span class="hljs-number">0</span>            <span class="hljs-number">4</span>
+
+
+--analyze 分析下 更改<span class="hljs-variable constant_">EMPTY_BLOCKS</span>的值
+<span class="hljs-variable constant_">SQL</span>&gt; analyze table tt compute statistics;
+
+<span class="hljs-title class_">Table</span> analyzed
+
+ --重新查询段信息，
+<span class="hljs-variable constant_">SQL</span>&gt;  <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  <span class="hljs-variable constant_">WHERE</span> segment_name=<span class="hljs-string">&#x27;TT&#x27;</span>;
+
+<span class="hljs-variable constant_">SEGMENT_NAME</span>       <span class="hljs-variable constant_">SEGMENT_TYPE</span>     <span class="hljs-variable constant_">BLOCKS</span>
+---------         ----------       ----------
+<span class="hljs-variable constant_">TT</span>                  <span class="hljs-variable constant_">TABLE</span>            <span class="hljs-number">8</span>
+
+ --重新查询表信息
+<span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;
+
+<span class="hljs-variable constant_">TABLE_NAME</span>  <span class="hljs-variable constant_">NUM_ROWS</span>     <span class="hljs-variable constant_">BLOCKS</span>       <span class="hljs-variable constant_">EMPTY_BLOCKS</span>
+---------- -----       ----------   ------------
+<span class="hljs-variable constant_">TT</span>           <span class="hljs-number">0</span>             <span class="hljs-number">0</span>            <span class="hljs-number">8</span>
+
+<span class="hljs-variable constant_">SQL</span>&gt;</code></pre></div>
 
 <p>复制</p>
 <p>总共8个数据块，8个为空</p>
 <hr>
 <h1 id="Alter-table-move-和Shrink的区别"><a href="#Alter-table-move-和Shrink的区别" class="headerlink" title="Alter table move 和Shrink的区别"></a>Alter table move 和Shrink的区别</h1><h2 id="Shrink"><a href="#Shrink" class="headerlink" title="Shrink"></a>Shrink</h2><p>在10g之后，整理碎片消除行迁移的新增功能shrink space</p>
 <p>语法</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">alter table  shrink space [ &lt;<span class="hljs-literal">null</span>&gt; | compact | cascade ];<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs javascript">alter table  shrink space [ &lt;<span class="hljs-literal">null</span>&gt; | compact | cascade ];</code></pre></div>
 
 <p>复制</p>
 <ul>
@@ -411,7 +496,20 @@
 <li>cascade：这个参数是在shrink table的时候自动级联索引，相当于rebulid index。</li>
 </ul>
 <p>基于普通表</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript">--shrink必须开启行迁移功能。<br>alter table table_name enable row movement ;<br><br>--保持<span class="hljs-variable constant_">HWM</span>，相当于把块中数据打结实了<br>alter table table_name shrink space compact;<br><br>--回缩表与降低<span class="hljs-variable constant_">HWM</span><br>alter table table_name shrink space;<br><br>--回缩表与相关索引，降低<span class="hljs-variable constant_">HWM</span><br>alter table table_name shrink space cascade;<br><br>--回缩索引与降低<span class="hljs-variable constant_">HWM</span><br>alter index index_name shrink space<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs javascript">--shrink必须开启行迁移功能。
+alter table table_name enable row movement ;
+
+--保持<span class="hljs-variable constant_">HWM</span>，相当于把块中数据打结实了
+alter table table_name shrink space compact;
+
+--回缩表与降低<span class="hljs-variable constant_">HWM</span>
+alter table table_name shrink space;
+
+--回缩表与相关索引，降低<span class="hljs-variable constant_">HWM</span>
+alter table table_name shrink space cascade;
+
+--回缩索引与降低<span class="hljs-variable constant_">HWM</span>
+alter index index_name shrink space</code></pre></div>
 
 <p>复制</p>
 <p>虽然在10g中可以用shrink ，但也有些限制：</p>
@@ -422,24 +520,70 @@
 <li>4). 不支持compressed 表</li>
 </ul>
 <hr>
-<h2 id="shrink栗子"><a href="#shrink栗子" class="headerlink" title="shrink栗子"></a>shrink栗子</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; create table <span class="hljs-title function_">tt</span>(id number);<br><br><br><span class="hljs-variable constant_">SQL</span>&gt; declare<br>  i number;<br>begin<br>  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span> .. <span class="hljs-number">10000</span> loop<br>    insert into tt values (i);<br>  end loop;<br>  commit;<br>end;<br><br><br><br><span class="hljs-variable constant_">SQL</span>&gt; exec  <span class="hljs-variable constant_">DBMS_STATS</span>.<span class="hljs-title function_">GATHER_TABLE_STATS</span>(user,<span class="hljs-string">&#x27;TT&#x27;</span>);<br><br><br><br><br><span class="hljs-variable constant_">SQL</span>&gt;  analyze table tt compute statistics;<br><br><br><br><br><br> <span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-keyword">delete</span> <span class="hljs-keyword">from</span> tt;<br> <span class="hljs-variable constant_">SQL</span>&gt; commit ;<br><br><span class="hljs-variable constant_">SQL</span>&gt; alter table tt enable row movement ;<br><span class="hljs-variable constant_">SQL</span>&gt; alter table tt  shrink space;<br><span class="hljs-variable constant_">SQL</span>&gt; analyze table tt compute statistics;<br><br><br><span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  <span class="hljs-variable constant_">WHERE</span> segment_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br><br><span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<h2 id="shrink栗子"><a href="#shrink栗子" class="headerlink" title="shrink栗子"></a>shrink栗子</h2><div class="code-wrapper"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SQL</span>&gt; create table <span class="hljs-title function_">tt</span>(id number);
+
+
+<span class="hljs-variable constant_">SQL</span>&gt; declare
+  i number;
+begin
+  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span> .. <span class="hljs-number">10000</span> loop
+    insert into tt values (i);
+  end loop;
+  commit;
+end;
+
+
+
+<span class="hljs-variable constant_">SQL</span>&gt; exec  <span class="hljs-variable constant_">DBMS_STATS</span>.<span class="hljs-title function_">GATHER_TABLE_STATS</span>(user,<span class="hljs-string">&#x27;TT&#x27;</span>);
+
+
+
+
+<span class="hljs-variable constant_">SQL</span>&gt;  analyze table tt compute statistics;
+
+
+
+
+
+ <span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-keyword">delete</span> <span class="hljs-keyword">from</span> tt;
+ <span class="hljs-variable constant_">SQL</span>&gt; commit ;
+
+<span class="hljs-variable constant_">SQL</span>&gt; alter table tt enable row movement ;
+<span class="hljs-variable constant_">SQL</span>&gt; alter table tt  shrink space;
+<span class="hljs-variable constant_">SQL</span>&gt; analyze table tt compute statistics;
+
+
+<span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> segment_name,segment_type,blocks <span class="hljs-variable constant_">FROM</span> dba_segments  <span class="hljs-variable constant_">WHERE</span> segment_name=<span class="hljs-string">&#x27;TT&#x27;</span>;
+
+<span class="hljs-variable constant_">SQL</span>&gt; <span class="hljs-variable constant_">SELECT</span> table_name,num_rows,blocks,empty_blocks <span class="hljs-variable constant_">FROM</span> user_tables  <span class="hljs-variable constant_">WHERE</span> table_name=<span class="hljs-string">&#x27;TT&#x27;</span>;</code></pre></div>
 
 <p>复制</p>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-8916337/c3406fdc5da5c7287e1b743d05c00f82.png" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-8916337/a7f635ef83b3321301b5897db5ddb157.png" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p><img src="/../images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D8.jpg" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p><img src="/../images/oracle%E9%AB%98%E6%B0%B4%E4%BD%8D7.jpg" srcset="/img/loading.gif" lazyload alt="这里写图片描述"></p>
 <hr>
 <h2 id="Move"><a href="#Move" class="headerlink" title="Move"></a>Move</h2><p>通过desc table_name 来检查表中是否有LOB 字段，</p>
 <h3 id="表中没有lob字段"><a href="#表中没有lob字段" class="headerlink" title="表中没有lob字段"></a>表中没有lob字段</h3><p>如果表没有LOB字段， 直接 alter table move; 然后 rebuild index</p>
-<h3 id="表中包含了LOB字段"><a href="#表中包含了LOB字段" class="headerlink" title="表中包含了LOB字段"></a>表中包含了LOB字段</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">alter table owner.<span class="hljs-property">table_name</span> move tablespace tablespace_name lob (lob_column) store <span class="hljs-keyword">as</span> lobsegment tablespace tablespace_name;<br></code></pre></td></tr></table></figure>
+<h3 id="表中包含了LOB字段"><a href="#表中包含了LOB字段" class="headerlink" title="表中包含了LOB字段"></a>表中包含了LOB字段</h3><div class="code-wrapper"><pre><code class="hljs javascript">alter table owner.<span class="hljs-property">table_name</span> move tablespace tablespace_name lob (lob_column) store <span class="hljs-keyword">as</span> lobsegment tablespace tablespace_name;</code></pre></div>
 
 <p>复制</p>
 <p>也可以单独move lob，但是表上的index 同样会失效. 所以在操作结束，需要对索引进行rebuild。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">alter table owner.<span class="hljs-property">table_name</span> move <span class="hljs-title function_">lob</span>(lob_column) store <span class="hljs-keyword">as</span> lobsegment tablespace tablespace_name ;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs javascript">alter table owner.<span class="hljs-property">table_name</span> move <span class="hljs-title function_">lob</span>(lob_column) store <span class="hljs-keyword">as</span> lobsegment tablespace tablespace_name ;</code></pre></div>
 
 <p>复制</p>
 <p>索引的rebuild：</p>
 <p>首先用下面的SQL查看表上面有哪类索引:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SELECT</span> a.<span class="hljs-property">owner</span>,<br>       a.<span class="hljs-property">index_name</span>,<br>       a.<span class="hljs-property">index_type</span>,<br>       a.<span class="hljs-property">partitioned</span>,<br>       a.<span class="hljs-property">status</span>,<br>       b.<span class="hljs-property">status</span> p_status,<br>       b.<span class="hljs-property">composite</span><br>  <span class="hljs-variable constant_">FROM</span>    dba_indexes a<br>       <span class="hljs-variable constant_">LEFT</span> <span class="hljs-variable constant_">JOIN</span><br>          dba_ind_partitions b<br>       <span class="hljs-variable constant_">ON</span> a.<span class="hljs-property">owner</span> = b.<span class="hljs-property">index_owner</span> <span class="hljs-variable constant_">AND</span> a.<span class="hljs-property">index_name</span> = b.<span class="hljs-property">index_name</span><br> <span class="hljs-variable constant_">WHERE</span> a.<span class="hljs-property">owner</span> = <span class="hljs-string">&#x27;&amp;owner&#x27;</span> <span class="hljs-variable constant_">AND</span> a.<span class="hljs-property">table_name</span> = <span class="hljs-string">&#x27;&amp;table_name&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs javascript"><span class="hljs-variable constant_">SELECT</span> a.<span class="hljs-property">owner</span>,
+       a.<span class="hljs-property">index_name</span>,
+       a.<span class="hljs-property">index_type</span>,
+       a.<span class="hljs-property">partitioned</span>,
+       a.<span class="hljs-property">status</span>,
+       b.<span class="hljs-property">status</span> p_status,
+       b.<span class="hljs-property">composite</span>
+  <span class="hljs-variable constant_">FROM</span>    dba_indexes a
+       <span class="hljs-variable constant_">LEFT</span> <span class="hljs-variable constant_">JOIN</span>
+          dba_ind_partitions b
+       <span class="hljs-variable constant_">ON</span> a.<span class="hljs-property">owner</span> = b.<span class="hljs-property">index_owner</span> <span class="hljs-variable constant_">AND</span> a.<span class="hljs-property">index_name</span> = b.<span class="hljs-property">index_name</span>
+ <span class="hljs-variable constant_">WHERE</span> a.<span class="hljs-property">owner</span> = <span class="hljs-string">&#x27;&amp;owner&#x27;</span> <span class="hljs-variable constant_">AND</span> a.<span class="hljs-property">table_name</span> = <span class="hljs-string">&#x27;&amp;table_name&#x27;</span>;</code></pre></div>
 
 <p>复制</p>
 <p>对于普通索引直接rebuild online nologging parallel,  对于分区索引，必须单独rebuild 每个分区,  对于组合分区索引,必须单独rebuild 每个子分区。</p>

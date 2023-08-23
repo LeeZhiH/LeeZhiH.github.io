@@ -7,10 +7,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Li zhihao">
@@ -161,18 +163,6 @@
             </li>
           
         
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
         
           <li class="nav-item" id="search-btn">
             <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
@@ -225,7 +215,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          19k 字
+          18k 字
         
       </span>
     
@@ -236,7 +226,7 @@
         
         
         
-          158 分钟
+          150 分钟
         
       </span>
     
@@ -287,10 +277,66 @@
 </ul>
 <h2 id="2-商品秒杀-超卖"><a href="#2-商品秒杀-超卖" class="headerlink" title="2.商品秒杀-超卖"></a>2.商品秒杀-超卖</h2><p>在开发中，对于下面的代码，可能很熟悉：在Service里面加上<code>@Transactional</code>事务注解和Lock锁</p>
 <p>控制层：Controller</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式——Lock加锁&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/start/lock&quot;)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        log.info(<span class="hljs-string">&quot;开始秒杀方式一...&quot;</span>);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;<br>        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByLock(skgId, userId);<br>        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));<br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        e.printStackTrace();<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br><br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok();<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式——Lock加锁&quot;)</span>
+<span class="hljs-meta">@PostMapping(&quot;/start/lock&quot;)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;
+    <span class="hljs-keyword">try</span> &#123;
+        log.info(<span class="hljs-string">&quot;开始秒杀方式一...&quot;</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;
+        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByLock(skgId, userId);
+        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));
+        &#125;<span class="hljs-keyword">else</span>&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        e.printStackTrace();
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok();
+&#125;</code></pre></div>
 
 <p>业务层：Service</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId)</span> &#123;<br>    lock.lock();<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-comment">// 校验库存</span><br>        <span class="hljs-type">SecondKill</span> <span class="hljs-variable">secondKill</span> <span class="hljs-operator">=</span> secondKillMapper.selectById(skgId);<br>        <span class="hljs-type">Integer</span> <span class="hljs-variable">number</span> <span class="hljs-operator">=</span> secondKill.getNumber();<br>        <span class="hljs-keyword">if</span> (number &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-comment">// 扣库存</span><br>            secondKill.setNumber(number - <span class="hljs-number">1</span>);<br>            secondKillMapper.updateById(secondKill);<br>            <span class="hljs-comment">// 创建订单</span><br>            <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();<br>            killed.setSeckillId(skgId);<br>            killed.setUserId(userId);<br>            killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);<br>            killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>            successKilledMapper.insert(killed);<br><br>            <span class="hljs-comment">// 模拟支付</span><br>            <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();<br>            payment.setSeckillId(skgId);<br>            payment.setSeckillId(skgId);<br>            payment.setUserId(userId);<br>            payment.setMoney(<span class="hljs-number">40</span>);<br>            payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);<br>            payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>            paymentMapper.insert(payment);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        lock.unlock();<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@Override</span>
+<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId)</span> &#123;
+    lock.lock();
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-comment">// 校验库存</span>
+        <span class="hljs-type">SecondKill</span> <span class="hljs-variable">secondKill</span> <span class="hljs-operator">=</span> secondKillMapper.selectById(skgId);
+        <span class="hljs-type">Integer</span> <span class="hljs-variable">number</span> <span class="hljs-operator">=</span> secondKill.getNumber();
+        <span class="hljs-keyword">if</span> (number &gt; <span class="hljs-number">0</span>) &#123;
+            <span class="hljs-comment">// 扣库存</span>
+            secondKill.setNumber(number - <span class="hljs-number">1</span>);
+            secondKillMapper.updateById(secondKill);
+            <span class="hljs-comment">// 创建订单</span>
+            <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();
+            killed.setSeckillId(skgId);
+            killed.setUserId(userId);
+            killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);
+            killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+            successKilledMapper.insert(killed);
+
+            <span class="hljs-comment">// 模拟支付</span>
+            <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();
+            payment.setSeckillId(skgId);
+            payment.setSeckillId(skgId);
+            payment.setUserId(userId);
+            payment.setMoney(<span class="hljs-number">40</span>);
+            payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);
+            payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+            paymentMapper.insert(payment);
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        lock.unlock();
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);
+&#125;</code></pre></div>
 
 <p>对于上面的代码应该没啥问题吧，业务方法上加事务，在处理业务的时候加锁。</p>
 <p>但上面这样写法是有问题的，会出现超卖的情况，看下测试结果：模拟1000个并发，抢100商品</p>
@@ -308,7 +354,28 @@
 <li>可以在controller层进行加锁</li>
 <li>可以使用Aop在业务方法执行之前进行加锁</li>
 </ul>
-<h3 id="3-1-方式一（改进版加锁）"><a href="#3-1-方式一（改进版加锁）" class="headerlink" title="3.1 方式一（改进版加锁）"></a>3.1 方式一（改进版加锁）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式——Lock加锁&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/start/lock&quot;)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;<br>    <span class="hljs-comment">// 在此处加锁</span><br>    lock.lock();<br>    <span class="hljs-keyword">try</span> &#123;<br>        log.info(<span class="hljs-string">&quot;开始秒杀方式一...&quot;</span>);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;<br>        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByLock(skgId, userId);<br>        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));<br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        e.printStackTrace();<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        <span class="hljs-comment">// 在此处释放锁</span><br>        lock.unlock();<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok();<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="3-1-方式一（改进版加锁）"><a href="#3-1-方式一（改进版加锁）" class="headerlink" title="3.1 方式一（改进版加锁）"></a>3.1 方式一（改进版加锁）</h3><div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式——Lock加锁&quot;)</span>
+<span class="hljs-meta">@PostMapping(&quot;/start/lock&quot;)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;
+    <span class="hljs-comment">// 在此处加锁</span>
+    lock.lock();
+    <span class="hljs-keyword">try</span> &#123;
+        log.info(<span class="hljs-string">&quot;开始秒杀方式一...&quot;</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;
+        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByLock(skgId, userId);
+        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));
+        &#125;<span class="hljs-keyword">else</span>&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        e.printStackTrace();
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        <span class="hljs-comment">// 在此处释放锁</span>
+        lock.unlock();
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok();
+&#125;</code></pre></div>
 
 <p>上面这样的加锁就可以解决事务未提交之前，锁释放的问题，可以分三种情况进行压力测试：</p>
 <ul>
@@ -321,49 +388,429 @@
 <p><img src="https://mmbiz.qpic.cn/mmbiz_png/6mychickmupU5s2jJ2rNPSk92pXttrWN7icxAlGgtb1T8GGPZXNXX2yjPBTx2dictLauWu795rJfGHUSHibpQVgFzw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
 <h3 id="3-2-方式二（AOP版加锁）"><a href="#3-2-方式二（AOP版加锁）" class="headerlink" title="3.2 方式二（AOP版加锁）"></a>3.2 方式二（AOP版加锁）</h3><p>对于上面在控制层进行加锁的方式，可能显得不优雅，那就还有另一种方式进行在事务之前加锁，那就是AOP</p>
 <p>自定义AOP注解</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Target(&#123;ElementType.PARAMETER, ElementType.METHOD&#125;)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-meta">@Documented</span><br><span class="hljs-keyword">public</span>  <span class="hljs-meta">@interface</span> ServiceLock &#123;<br>    String <span class="hljs-title function_">description</span><span class="hljs-params">()</span>  <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@Target(&#123;ElementType.PARAMETER, ElementType.METHOD&#125;)</span>
+<span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span>
+<span class="hljs-meta">@Documented</span>
+<span class="hljs-keyword">public</span>  <span class="hljs-meta">@interface</span> ServiceLock &#123;
+    String <span class="hljs-title function_">description</span><span class="hljs-params">()</span>  <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;
+&#125;</code></pre></div>
 
 <p>定义切面类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Slf4j</span><br><span class="hljs-meta">@Component</span><br><span class="hljs-meta">@Scope</span><br><span class="hljs-meta">@Aspect</span><br><span class="hljs-meta">@Order(1)</span> <span class="hljs-comment">//order越小越是最先执行，但更重要的是最先执行的最后结束</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LockAspect</span> &#123;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 思考：为什么不用synchronized</span><br><span class="hljs-comment">     * service 默认是单例的，并发下lock只有一个实例</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span>  <span class="hljs-type">Lock</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReentrantLock</span>(<span class="hljs-literal">true</span>); <span class="hljs-comment">// 互斥锁 参数默认false，不公平锁</span><br><br>    <span class="hljs-comment">// Service层切点     用于记录错误日志</span><br>    <span class="hljs-meta">@Pointcut(&quot;@annotation(com.scorpios.secondkill.aop.ServiceLock)&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">lockAspect</span><span class="hljs-params">()</span> &#123;<br><br>    &#125;<br><br>    <span class="hljs-meta">@Around(&quot;lockAspect()&quot;)</span><br>    <span class="hljs-keyword">public</span>  Object <span class="hljs-title function_">around</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> &#123;<br>        lock.lock();<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        <span class="hljs-keyword">try</span> &#123;<br>            obj = joinPoint.proceed();<br>        &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;<br>            e.printStackTrace();<br>   <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>();<br>        &#125; <span class="hljs-keyword">finally</span>&#123;<br>            lock.unlock();<br>        &#125;<br>        <span class="hljs-keyword">return</span> obj;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@Slf4j</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-meta">@Scope</span>
+<span class="hljs-meta">@Aspect</span>
+<span class="hljs-meta">@Order(1)</span> <span class="hljs-comment">//order越小越是最先执行，但更重要的是最先执行的最后结束</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LockAspect</span> &#123;
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 思考：为什么不用synchronized</span>
+<span class="hljs-comment">     * service 默认是单例的，并发下lock只有一个实例</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span>  <span class="hljs-type">Lock</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReentrantLock</span>(<span class="hljs-literal">true</span>); <span class="hljs-comment">// 互斥锁 参数默认false，不公平锁</span>
+
+    <span class="hljs-comment">// Service层切点     用于记录错误日志</span>
+    <span class="hljs-meta">@Pointcut(&quot;@annotation(com.scorpios.secondkill.aop.ServiceLock)&quot;)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">lockAspect</span><span class="hljs-params">()</span> &#123;
+
+    &#125;
+
+    <span class="hljs-meta">@Around(&quot;lockAspect()&quot;)</span>
+    <span class="hljs-keyword">public</span>  Object <span class="hljs-title function_">around</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> &#123;
+        lock.lock();
+        <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">try</span> &#123;
+            obj = joinPoint.proceed();
+        &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;
+            e.printStackTrace();
+   <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>();
+        &#125; <span class="hljs-keyword">finally</span>&#123;
+            lock.unlock();
+        &#125;
+        <span class="hljs-keyword">return</span> obj;
+    &#125;
+&#125;</code></pre></div>
 
 <p>在业务方法上添加AOP注解</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-meta">@ServiceLock</span> <span class="hljs-comment">// 使用Aop进行加锁</span><br><span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByAop</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId)</span> &#123;<br><br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-comment">// 校验库存</span><br>        <span class="hljs-type">SecondKill</span> <span class="hljs-variable">secondKill</span> <span class="hljs-operator">=</span> secondKillMapper.selectById(skgId);<br>        <span class="hljs-type">Integer</span> <span class="hljs-variable">number</span> <span class="hljs-operator">=</span> secondKill.getNumber();<br>        <span class="hljs-keyword">if</span> (number &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-comment">//扣库存</span><br>            secondKill.setNumber(number - <span class="hljs-number">1</span>);<br>            secondKillMapper.updateById(secondKill);<br>            <span class="hljs-comment">//创建订单</span><br>            <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();<br>            killed.setSeckillId(skgId);<br>            killed.setUserId(userId);<br>            killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);<br>            killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>            successKilledMapper.insert(killed);<br><br>            <span class="hljs-comment">//支付</span><br>            <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();<br>            payment.setSeckillId(skgId);<br>            payment.setSeckillId(skgId);<br>            payment.setUserId(userId);<br>            payment.setMoney(<span class="hljs-number">40</span>);<br>            payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);<br>            payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>            paymentMapper.insert(payment);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@Override</span>
+<span class="hljs-meta">@ServiceLock</span> <span class="hljs-comment">// 使用Aop进行加锁</span>
+<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByAop</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId)</span> &#123;
+
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-comment">// 校验库存</span>
+        <span class="hljs-type">SecondKill</span> <span class="hljs-variable">secondKill</span> <span class="hljs-operator">=</span> secondKillMapper.selectById(skgId);
+        <span class="hljs-type">Integer</span> <span class="hljs-variable">number</span> <span class="hljs-operator">=</span> secondKill.getNumber();
+        <span class="hljs-keyword">if</span> (number &gt; <span class="hljs-number">0</span>) &#123;
+            <span class="hljs-comment">//扣库存</span>
+            secondKill.setNumber(number - <span class="hljs-number">1</span>);
+            secondKillMapper.updateById(secondKill);
+            <span class="hljs-comment">//创建订单</span>
+            <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();
+            killed.setSeckillId(skgId);
+            killed.setUserId(userId);
+            killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);
+            killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+            successKilledMapper.insert(killed);
+
+            <span class="hljs-comment">//支付</span>
+            <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();
+            payment.setSeckillId(skgId);
+            payment.setSeckillId(skgId);
+            payment.setUserId(userId);
+            payment.setMoney(<span class="hljs-number">40</span>);
+            payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);
+            payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+            paymentMapper.insert(payment);
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);
+&#125;</code></pre></div>
 
 <p>控制层：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式二——Aop加锁&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/start/aop&quot;)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startAop</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        log.info(<span class="hljs-string">&quot;开始秒杀方式二...&quot;</span>);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;<br>        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByAop(skgId, userId);<br>        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));<br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        e.printStackTrace();<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok();<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式二——Aop加锁&quot;)</span>
+<span class="hljs-meta">@PostMapping(&quot;/start/aop&quot;)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startAop</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;
+    <span class="hljs-keyword">try</span> &#123;
+        log.info(<span class="hljs-string">&quot;开始秒杀方式二...&quot;</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;
+        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByAop(skgId, userId);
+        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));
+        &#125;<span class="hljs-keyword">else</span>&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        e.printStackTrace();
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok();
+&#125;</code></pre></div>
 
 <p>这种方式在对锁的使用上，更高阶、更美观！</p>
 <h3 id="3-3-方式三（悲观锁一）"><a href="#3-3-方式三（悲观锁一）" class="headerlink" title="3.3 方式三（悲观锁一）"></a>3.3 方式三（悲观锁一）</h3><p>除了上面在业务代码层面加锁外，还可以使用数据库自带的锁进行并发控制。</p>
 <p>悲观锁，什么是悲观锁呢？通俗的说，在做任何事情之前，都要进行加锁确认。这种数据库级加锁操作效率较低。</p>
 <p>使用for update一定要加上事务，当事务处理完后，for update才会将行级锁解除</p>
 <p>如果请求数和秒杀商品数量一致，会出现少卖</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式三——悲观锁&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/start/pes/lock/one&quot;)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startPesLockOne</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        log.info(<span class="hljs-string">&quot;开始秒杀方式三...&quot;</span>);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;<br>        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByUpdate(skgId, userId);<br>        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));<br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        e.printStackTrace();<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok();<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式三——悲观锁&quot;)</span>
+<span class="hljs-meta">@PostMapping(&quot;/start/pes/lock/one&quot;)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startPesLockOne</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;
+    <span class="hljs-keyword">try</span> &#123;
+        log.info(<span class="hljs-string">&quot;开始秒杀方式三...&quot;</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;
+        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByUpdate(skgId, userId);
+        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));
+        &#125;<span class="hljs-keyword">else</span>&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        e.printStackTrace();
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok();
+&#125;</code></pre></div>
 
 <p>业务逻辑</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByUpdate</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId)</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-comment">// 校验库存-悲观锁</span><br>        <span class="hljs-type">SecondKill</span> <span class="hljs-variable">secondKill</span> <span class="hljs-operator">=</span> secondKillMapper.querySecondKillForUpdate(skgId);<br>        <span class="hljs-type">Integer</span> <span class="hljs-variable">number</span> <span class="hljs-operator">=</span> secondKill.getNumber();<br>        <span class="hljs-keyword">if</span> (number &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-comment">//扣库存</span><br>            secondKill.setNumber(number - <span class="hljs-number">1</span>);<br>            secondKillMapper.updateById(secondKill);<br>            <span class="hljs-comment">//创建订单</span><br>            <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();<br>            killed.setSeckillId(skgId);<br>            killed.setUserId(userId);<br>            killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);<br>            killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>            successKilledMapper.insert(killed);<br><br>            <span class="hljs-comment">//支付</span><br>            <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();<br>            payment.setSeckillId(skgId);<br>            payment.setSeckillId(skgId);<br>            payment.setUserId(userId);<br>            payment.setMoney(<span class="hljs-number">40</span>);<br>            payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);<br>            payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>            paymentMapper.insert(payment);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@Override</span>
+<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByUpdate</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId)</span> &#123;
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-comment">// 校验库存-悲观锁</span>
+        <span class="hljs-type">SecondKill</span> <span class="hljs-variable">secondKill</span> <span class="hljs-operator">=</span> secondKillMapper.querySecondKillForUpdate(skgId);
+        <span class="hljs-type">Integer</span> <span class="hljs-variable">number</span> <span class="hljs-operator">=</span> secondKill.getNumber();
+        <span class="hljs-keyword">if</span> (number &gt; <span class="hljs-number">0</span>) &#123;
+            <span class="hljs-comment">//扣库存</span>
+            secondKill.setNumber(number - <span class="hljs-number">1</span>);
+            secondKillMapper.updateById(secondKill);
+            <span class="hljs-comment">//创建订单</span>
+            <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();
+            killed.setSeckillId(skgId);
+            killed.setUserId(userId);
+            killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);
+            killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+            successKilledMapper.insert(killed);
+
+            <span class="hljs-comment">//支付</span>
+            <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();
+            payment.setSeckillId(skgId);
+            payment.setSeckillId(skgId);
+            payment.setUserId(userId);
+            payment.setMoney(<span class="hljs-number">40</span>);
+            payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);
+            payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+            paymentMapper.insert(payment);
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);
+&#125;</code></pre></div>
 
 <p>Dao层</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">SecondKillMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseMapper</span>&lt;SecondKill&gt; &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 将此行数据进行加锁，当整个方法将事务提交后，才会解锁</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> skgId</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Select(value = &quot;SELECT * FROM seckill WHERE seckill_id=#&#123;skgId&#125; FOR UPDATE&quot;)</span><br>    SecondKill <span class="hljs-title function_">querySecondKillForUpdate</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> Long skgId)</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">SecondKillMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseMapper</span>&lt;SecondKill&gt; &#123;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 将此行数据进行加锁，当整个方法将事务提交后，才会解锁</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@param</span> skgId</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-meta">@Select(value = &quot;SELECT * FROM seckill WHERE seckill_id=#&#123;skgId&#125; FOR UPDATE&quot;)</span>
+    SecondKill <span class="hljs-title function_">querySecondKillForUpdate</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> Long skgId)</span>;
+
+&#125;</code></pre></div>
 
 <p>上面是利用for update进行对查询数据加锁，加的是行锁</p>
 <h3 id="3-4-方式四（悲观锁二）"><a href="#3-4-方式四（悲观锁二）" class="headerlink" title="3.4 方式四（悲观锁二）"></a>3.4 方式四（悲观锁二）</h3><p>悲观锁的第二种方式就是利用update更新命令来加表锁</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * UPDATE锁表</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> skgId  商品id</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> userId    用户id</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Override</span><br><span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByUpdateTwo</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId)</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br><br>        <span class="hljs-comment">// 不校验，直接扣库存更新</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillMapper.updateSecondKillById(skgId);<br>        <span class="hljs-keyword">if</span> (result &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-comment">//创建订单</span><br>            <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();<br>            killed.setSeckillId(skgId);<br>            killed.setUserId(userId);<br>            killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);<br>            killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>            successKilledMapper.insert(killed);<br><br>            <span class="hljs-comment">//支付</span><br>            <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();<br>            payment.setSeckillId(skgId);<br>            payment.setSeckillId(skgId);<br>            payment.setUserId(userId);<br>            payment.setMoney(<span class="hljs-number">40</span>);<br>            payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);<br>            payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>            paymentMapper.insert(payment);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * UPDATE锁表</span>
+<span class="hljs-comment"> * <span class="hljs-doctag">@param</span> skgId  商品id</span>
+<span class="hljs-comment"> * <span class="hljs-doctag">@param</span> userId    用户id</span>
+<span class="hljs-comment"> * <span class="hljs-doctag">@return</span></span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-meta">@Override</span>
+<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByUpdateTwo</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId)</span> &#123;
+    <span class="hljs-keyword">try</span> &#123;
+
+        <span class="hljs-comment">// 不校验，直接扣库存更新</span>
+        <span class="hljs-type">int</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillMapper.updateSecondKillById(skgId);
+        <span class="hljs-keyword">if</span> (result &gt; <span class="hljs-number">0</span>) &#123;
+            <span class="hljs-comment">//创建订单</span>
+            <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();
+            killed.setSeckillId(skgId);
+            killed.setUserId(userId);
+            killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);
+            killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+            successKilledMapper.insert(killed);
+
+            <span class="hljs-comment">//支付</span>
+            <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();
+            payment.setSeckillId(skgId);
+            payment.setSeckillId(skgId);
+            payment.setUserId(userId);
+            payment.setMoney(<span class="hljs-number">40</span>);
+            payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);
+            payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+            paymentMapper.insert(payment);
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);
+&#125;</code></pre></div>
 
 <p>Dao层</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">SecondKillMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseMapper</span>&lt;SecondKill&gt; &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 将此行数据进行加锁，当整个方法将事务提交后，才会解锁</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> skgId</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Select(value = &quot;SELECT * FROM seckill WHERE seckill_id=#&#123;skgId&#125; FOR UPDATE&quot;)</span><br>    SecondKill <span class="hljs-title function_">querySecondKillForUpdate</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> Long skgId)</span>;<br><br>    <span class="hljs-meta">@Update(value = &quot;UPDATE seckill SET number=number-1 WHERE seckill_id=#&#123;skgId&#125; AND number &gt; 0&quot;)</span><br>    <span class="hljs-type">int</span> <span class="hljs-title function_">updateSecondKillById</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> <span class="hljs-type">long</span> skgId)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">SecondKillMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseMapper</span>&lt;SecondKill&gt; &#123;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 将此行数据进行加锁，当整个方法将事务提交后，才会解锁</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@param</span> skgId</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-meta">@Select(value = &quot;SELECT * FROM seckill WHERE seckill_id=#&#123;skgId&#125; FOR UPDATE&quot;)</span>
+    SecondKill <span class="hljs-title function_">querySecondKillForUpdate</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> Long skgId)</span>;
+
+    <span class="hljs-meta">@Update(value = &quot;UPDATE seckill SET number=number-1 WHERE seckill_id=#&#123;skgId&#125; AND number &gt; 0&quot;)</span>
+    <span class="hljs-type">int</span> <span class="hljs-title function_">updateSecondKillById</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> <span class="hljs-type">long</span> skgId)</span>;
+&#125;</code></pre></div>
 
 <h3 id="3-5-方式五（乐观锁）"><a href="#3-5-方式五（乐观锁）" class="headerlink" title="3.5 方式五（乐观锁）"></a>3.5 方式五（乐观锁）</h3><p>乐观锁，顾名思义，就是对操作结果很乐观，通过利用version字段来判断数据是否被修改</p>
 <p>乐观锁，不进行库存数量的校验，直接做库存扣减</p>
 <p>这里使用的乐观锁会出现大量的数据更新异常（抛异常就会导致购买失败）、如果配置的抢购人数比较少、比如120:100(人数:商品) 会出现少买的情况，不推荐使用乐观锁。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式五——乐观锁&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/start/opt/lock&quot;)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startOptLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        log.info(<span class="hljs-string">&quot;开始秒杀方式五...&quot;</span>);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;<br>        <span class="hljs-comment">// 参数添加了购买数量</span><br>        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByPesLock(skgId, userId,<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));<br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        e.printStackTrace();<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok();<br>&#125;<br><span class="hljs-meta">@Override</span><br><span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByPesLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId, <span class="hljs-type">int</span> number)</span> &#123;<br><br>    <span class="hljs-comment">// 乐观锁，不进行库存数量的校验，直接</span><br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-type">SecondKill</span> <span class="hljs-variable">kill</span> <span class="hljs-operator">=</span> secondKillMapper.selectById(skgId);<br>        <span class="hljs-comment">// 剩余的数量应该要大于等于秒杀的数量</span><br>        <span class="hljs-keyword">if</span>(kill.getNumber() &gt;= number) &#123;<br>            <span class="hljs-type">int</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillMapper.updateSecondKillByVersion(number,skgId,kill.getVersion());<br>            <span class="hljs-keyword">if</span> (result &gt; <span class="hljs-number">0</span>) &#123;<br>                <span class="hljs-comment">//创建订单</span><br>                <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();<br>                killed.setSeckillId(skgId);<br>                killed.setUserId(userId);<br>                killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);<br>                killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>                successKilledMapper.insert(killed);<br><br>                <span class="hljs-comment">//支付</span><br>                <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();<br>                payment.setSeckillId(skgId);<br>                payment.setSeckillId(skgId);<br>                payment.setUserId(userId);<br>                payment.setMoney(<span class="hljs-number">40</span>);<br>                payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);<br>                payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));<br>                paymentMapper.insert(payment);<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);<br>            &#125;<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);<br>&#125;<br><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">SecondKillMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseMapper</span>&lt;SecondKill&gt; &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 将此行数据进行加锁，当整个方法将事务提交后，才会解锁</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> skgId</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Select(value = &quot;SELECT * FROM seckill WHERE seckill_id=#&#123;skgId&#125; FOR UPDATE&quot;)</span><br>    SecondKill <span class="hljs-title function_">querySecondKillForUpdate</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> Long skgId)</span>;<br><br>    <span class="hljs-meta">@Update(value = &quot;UPDATE seckill SET number=number-1 WHERE seckill_id=#&#123;skgId&#125; AND number &gt; 0&quot;)</span><br>    <span class="hljs-type">int</span> <span class="hljs-title function_">updateSecondKillById</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> <span class="hljs-type">long</span> skgId)</span>;<br><br>    <span class="hljs-meta">@Update(value = &quot;UPDATE seckill  SET number=number-#&#123;number&#125;,version=version+1 WHERE seckill_id=#&#123;skgId&#125; AND version = #&#123;version&#125;&quot;)</span><br>    <span class="hljs-type">int</span> <span class="hljs-title function_">updateSecondKillByVersion</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;number&quot;)</span> <span class="hljs-type">int</span> number, <span class="hljs-meta">@Param(&quot;skgId&quot;)</span> <span class="hljs-type">long</span> skgId, <span class="hljs-meta">@Param(&quot;version&quot;)</span><span class="hljs-type">int</span> version)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式五——乐观锁&quot;)</span>
+<span class="hljs-meta">@PostMapping(&quot;/start/opt/lock&quot;)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startOptLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;
+    <span class="hljs-keyword">try</span> &#123;
+        log.info(<span class="hljs-string">&quot;开始秒杀方式五...&quot;</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;
+        <span class="hljs-comment">// 参数添加了购买数量</span>
+        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByPesLock(skgId, userId,<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span>)&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, result.get(<span class="hljs-string">&quot;msg&quot;</span>));
+        &#125;<span class="hljs-keyword">else</span>&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;--&#123;&#125;&quot;</span>, userId, <span class="hljs-string">&quot;哎呦喂，人也太多了，请稍后！&quot;</span>);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        e.printStackTrace();
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok();
+&#125;
+<span class="hljs-meta">@Override</span>
+<span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startSecondKillByPesLock</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId, <span class="hljs-type">long</span> userId, <span class="hljs-type">int</span> number)</span> &#123;
+
+    <span class="hljs-comment">// 乐观锁，不进行库存数量的校验，直接</span>
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-type">SecondKill</span> <span class="hljs-variable">kill</span> <span class="hljs-operator">=</span> secondKillMapper.selectById(skgId);
+        <span class="hljs-comment">// 剩余的数量应该要大于等于秒杀的数量</span>
+        <span class="hljs-keyword">if</span>(kill.getNumber() &gt;= number) &#123;
+            <span class="hljs-type">int</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillMapper.updateSecondKillByVersion(number,skgId,kill.getVersion());
+            <span class="hljs-keyword">if</span> (result &gt; <span class="hljs-number">0</span>) &#123;
+                <span class="hljs-comment">//创建订单</span>
+                <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">killed</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();
+                killed.setSeckillId(skgId);
+                killed.setUserId(userId);
+                killed.setState((<span class="hljs-type">short</span>) <span class="hljs-number">0</span>);
+                killed.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+                successKilledMapper.insert(killed);
+
+                <span class="hljs-comment">//支付</span>
+                <span class="hljs-type">Payment</span> <span class="hljs-variable">payment</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Payment</span>();
+                payment.setSeckillId(skgId);
+                payment.setSeckillId(skgId);
+                payment.setUserId(userId);
+                payment.setMoney(<span class="hljs-number">40</span>);
+                payment.setState((<span class="hljs-type">short</span>) <span class="hljs-number">1</span>);
+                payment.setCreateTime(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Timestamp</span>(System.currentTimeMillis()));
+                paymentMapper.insert(payment);
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                <span class="hljs-keyword">return</span> Result.error(SecondKillStateEnum.END);
+            &#125;
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScorpiosException</span>(<span class="hljs-string">&quot;异常了个乖乖&quot;</span>);
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok(SecondKillStateEnum.SUCCESS);
+&#125;
+<span class="hljs-meta">@Repository</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">SecondKillMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseMapper</span>&lt;SecondKill&gt; &#123;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 将此行数据进行加锁，当整个方法将事务提交后，才会解锁</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@param</span> skgId</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-meta">@Select(value = &quot;SELECT * FROM seckill WHERE seckill_id=#&#123;skgId&#125; FOR UPDATE&quot;)</span>
+    SecondKill <span class="hljs-title function_">querySecondKillForUpdate</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> Long skgId)</span>;
+
+    <span class="hljs-meta">@Update(value = &quot;UPDATE seckill SET number=number-1 WHERE seckill_id=#&#123;skgId&#125; AND number &gt; 0&quot;)</span>
+    <span class="hljs-type">int</span> <span class="hljs-title function_">updateSecondKillById</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;skgId&quot;)</span> <span class="hljs-type">long</span> skgId)</span>;
+
+    <span class="hljs-meta">@Update(value = &quot;UPDATE seckill  SET number=number-#&#123;number&#125;,version=version+1 WHERE seckill_id=#&#123;skgId&#125; AND version = #&#123;version&#125;&quot;)</span>
+    <span class="hljs-type">int</span> <span class="hljs-title function_">updateSecondKillByVersion</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;number&quot;)</span> <span class="hljs-type">int</span> number, <span class="hljs-meta">@Param(&quot;skgId&quot;)</span> <span class="hljs-type">long</span> skgId, <span class="hljs-meta">@Param(&quot;version&quot;)</span><span class="hljs-type">int</span> version)</span>;
+&#125;</code></pre></div>
 
 <p>乐观锁会出现大量的数据更新异常（抛异常就会导致购买失败），会出现少买的情况，不推荐使用乐观锁</p>
 <h3 id="3-6-方式六（阻塞队列）"><a href="#3-6-方式六（阻塞队列）" class="headerlink" title="3.6 方式六（阻塞队列）"></a>3.6 方式六（阻塞队列）</h3><p>利用阻塞队类，也可以解决高并发问题。其思想就是把接收到的请求按顺序存放到队列中，消费者线程逐一从队列里取数据进行处理，看下具体代码。</p>
 <p>阻塞队列：这里使用静态内部类的方式来实现单例模式，在并发条件下不会出现问题。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 秒杀队列(固定长度为100)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillQueue</span> &#123;<br><br>    <span class="hljs-comment">// 队列大小</span><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">QUEUE_MAX_SIZE</span> <span class="hljs-operator">=</span> <span class="hljs-number">100</span>;<br><br>    <span class="hljs-comment">// 用于多线程间下单的队列</span><br>    <span class="hljs-keyword">static</span> BlockingQueue&lt;SuccessKilled&gt; blockingQueue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedBlockingQueue</span>&lt;SuccessKilled&gt;(QUEUE_MAX_SIZE);<br><br>    <span class="hljs-comment">// 使用静态内部类，实现单例模式</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-title function_">SecondKillQueue</span><span class="hljs-params">()</span>&#123;&#125;;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SingletonHolder</span>&#123;<br>        <span class="hljs-comment">// 静态初始化器，由JVM来保证线程安全</span><br>        <span class="hljs-keyword">private</span>  <span class="hljs-keyword">static</span> <span class="hljs-type">SecondKillQueue</span> <span class="hljs-variable">queue</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillQueue</span>();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 单例队列</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SecondKillQueue <span class="hljs-title function_">getSkillQueue</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-keyword">return</span> SingletonHolder.queue;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 生产入队</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> kill</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> InterruptedException</span><br><span class="hljs-comment">     * add(e) 队列未满时，返回true；队列满则抛出IllegalStateException(“Queue full”)异常——AbstractQueue</span><br><span class="hljs-comment">     * put(e) 队列未满时，直接插入没有返回值；队列满时会阻塞等待，一直等到队列未满时再插入。</span><br><span class="hljs-comment">     * offer(e) 队列未满时，返回true；队列满时返回false。非阻塞立即返回。</span><br><span class="hljs-comment">     * offer(e, time, unit) 设定等待的时间，如果在指定时间内还不能往队列中插入数据则返回false，插入成功返回true。</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span>  Boolean  <span class="hljs-title function_">produce</span><span class="hljs-params">(SuccessKilled kill)</span> &#123;<br>        <span class="hljs-keyword">return</span> blockingQueue.offer(kill);<br>    &#125;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 消费出队</span><br><span class="hljs-comment">     * poll() 获取并移除队首元素，在指定的时间内去轮询队列看有没有首元素有则返回，否者超时后返回null</span><br><span class="hljs-comment">     * take() 与带超时时间的poll类似不同在于take时候如果当前队列空了它会一直等待其他线程调用notEmpty.signal()才会被唤醒</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span>  SuccessKilled <span class="hljs-title function_">consume</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;<br>        <span class="hljs-keyword">return</span> blockingQueue.take();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取队列大小</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">size</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> blockingQueue.size();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-comment">// 秒杀队列(固定长度为100)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillQueue</span> &#123;
+
+    <span class="hljs-comment">// 队列大小</span>
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">QUEUE_MAX_SIZE</span> <span class="hljs-operator">=</span> <span class="hljs-number">100</span>;
+
+    <span class="hljs-comment">// 用于多线程间下单的队列</span>
+    <span class="hljs-keyword">static</span> BlockingQueue&lt;SuccessKilled&gt; blockingQueue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedBlockingQueue</span>&lt;SuccessKilled&gt;(QUEUE_MAX_SIZE);
+
+    <span class="hljs-comment">// 使用静态内部类，实现单例模式</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-title function_">SecondKillQueue</span><span class="hljs-params">()</span>&#123;&#125;;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SingletonHolder</span>&#123;
+        <span class="hljs-comment">// 静态初始化器，由JVM来保证线程安全</span>
+        <span class="hljs-keyword">private</span>  <span class="hljs-keyword">static</span> <span class="hljs-type">SecondKillQueue</span> <span class="hljs-variable">queue</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillQueue</span>();
+    &#125;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 单例队列</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SecondKillQueue <span class="hljs-title function_">getSkillQueue</span><span class="hljs-params">()</span>&#123;
+        <span class="hljs-keyword">return</span> SingletonHolder.queue;
+    &#125;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 生产入队</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@param</span> kill</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> InterruptedException</span>
+<span class="hljs-comment">     * add(e) 队列未满时，返回true；队列满则抛出IllegalStateException(“Queue full”)异常——AbstractQueue</span>
+<span class="hljs-comment">     * put(e) 队列未满时，直接插入没有返回值；队列满时会阻塞等待，一直等到队列未满时再插入。</span>
+<span class="hljs-comment">     * offer(e) 队列未满时，返回true；队列满时返回false。非阻塞立即返回。</span>
+<span class="hljs-comment">     * offer(e, time, unit) 设定等待的时间，如果在指定时间内还不能往队列中插入数据则返回false，插入成功返回true。</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">public</span>  Boolean  <span class="hljs-title function_">produce</span><span class="hljs-params">(SuccessKilled kill)</span> &#123;
+        <span class="hljs-keyword">return</span> blockingQueue.offer(kill);
+    &#125;
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 消费出队</span>
+<span class="hljs-comment">     * poll() 获取并移除队首元素，在指定的时间内去轮询队列看有没有首元素有则返回，否者超时后返回null</span>
+<span class="hljs-comment">     * take() 与带超时时间的poll类似不同在于take时候如果当前队列空了它会一直等待其他线程调用notEmpty.signal()才会被唤醒</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">public</span>  SuccessKilled <span class="hljs-title function_">consume</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;
+        <span class="hljs-keyword">return</span> blockingQueue.take();
+    &#125;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 获取队列大小</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">size</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-keyword">return</span> blockingQueue.size();
+    &#125;
+&#125;</code></pre></div>
 
 <p>消费秒杀队列：实现ApplicationRunner接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 消费秒杀队列</span><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-meta">@Component</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TaskRunner</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ApplicationRunner</span>&#123;<br><br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> SecondKillService seckillService;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">(ApplicationArguments <span class="hljs-keyword">var</span>)</span>&#123;<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; &#123;<br>            log.info(<span class="hljs-string">&quot;队列启动成功&quot;</span>);<br>            <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)&#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    <span class="hljs-comment">// 进程内队列</span><br>                    <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">kill</span> <span class="hljs-operator">=</span> SecondKillQueue.getSkillQueue().consume();<br>                    <span class="hljs-keyword">if</span>(kill != <span class="hljs-literal">null</span>)&#123;<br>                        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> seckillService.startSecondKillByAop(kill.getSeckillId(), kill.getUserId());<br>                        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span> &amp;&amp; result.equals(Result.ok(SecondKillStateEnum.SUCCESS)))&#123;<br>                            log.info(<span class="hljs-string">&quot;TaskRunner,result:&#123;&#125;&quot;</span>,result);<br>                            log.info(<span class="hljs-string">&quot;TaskRunner从消息队列取出用户，用户:&#123;&#125;&#123;&#125;&quot;</span>,kill.getUserId(),<span class="hljs-string">&quot;秒杀成功&quot;</span>);<br>                        &#125;<br>                    &#125;<br>                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                    e.printStackTrace();<br>                &#125;<br>            &#125;<br>        &#125;).start();<br>    &#125;<br>&#125;<br><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式六——消息队列&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/start/queue&quot;)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startQueue</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        log.info(<span class="hljs-string">&quot;开始秒杀方式六...&quot;</span>);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;<br>        <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">kill</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();<br>        kill.setSeckillId(skgId);<br>        kill.setUserId(userId);<br>        <span class="hljs-type">Boolean</span> <span class="hljs-variable">flag</span> <span class="hljs-operator">=</span> SecondKillQueue.getSkillQueue().produce(kill);<br>        <span class="hljs-comment">// 虽然进入了队列，但是不一定能秒杀成功 进队出队有时间间隙</span><br>        <span class="hljs-keyword">if</span>(flag)&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;&#123;&#125;&quot;</span>,kill.getUserId(),<span class="hljs-string">&quot;秒杀成功&quot;</span>);<br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;&#123;&#125;&quot;</span>,userId,<span class="hljs-string">&quot;秒杀失败&quot;</span>);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        e.printStackTrace();<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok();<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-comment">// 消费秒杀队列</span>
+<span class="hljs-meta">@Slf4j</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TaskRunner</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ApplicationRunner</span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> SecondKillService seckillService;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">(ApplicationArguments <span class="hljs-keyword">var</span>)</span>&#123;
+        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; &#123;
+            log.info(<span class="hljs-string">&quot;队列启动成功&quot;</span>);
+            <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)&#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    <span class="hljs-comment">// 进程内队列</span>
+                    <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">kill</span> <span class="hljs-operator">=</span> SecondKillQueue.getSkillQueue().consume();
+                    <span class="hljs-keyword">if</span>(kill != <span class="hljs-literal">null</span>)&#123;
+                        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> seckillService.startSecondKillByAop(kill.getSeckillId(), kill.getUserId());
+                        <span class="hljs-keyword">if</span>(result != <span class="hljs-literal">null</span> &amp;&amp; result.equals(Result.ok(SecondKillStateEnum.SUCCESS)))&#123;
+                            log.info(<span class="hljs-string">&quot;TaskRunner,result:&#123;&#125;&quot;</span>,result);
+                            log.info(<span class="hljs-string">&quot;TaskRunner从消息队列取出用户，用户:&#123;&#125;&#123;&#125;&quot;</span>,kill.getUserId(),<span class="hljs-string">&quot;秒杀成功&quot;</span>);
+                        &#125;
+                    &#125;
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+        &#125;).start();
+    &#125;
+&#125;
+<span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式六——消息队列&quot;)</span>
+<span class="hljs-meta">@PostMapping(&quot;/start/queue&quot;)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startQueue</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;
+    <span class="hljs-keyword">try</span> &#123;
+        log.info(<span class="hljs-string">&quot;开始秒杀方式六...&quot;</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;
+        <span class="hljs-type">SuccessKilled</span> <span class="hljs-variable">kill</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SuccessKilled</span>();
+        kill.setSeckillId(skgId);
+        kill.setUserId(userId);
+        <span class="hljs-type">Boolean</span> <span class="hljs-variable">flag</span> <span class="hljs-operator">=</span> SecondKillQueue.getSkillQueue().produce(kill);
+        <span class="hljs-comment">// 虽然进入了队列，但是不一定能秒杀成功 进队出队有时间间隙</span>
+        <span class="hljs-keyword">if</span>(flag)&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;&#123;&#125;&quot;</span>,kill.getUserId(),<span class="hljs-string">&quot;秒杀成功&quot;</span>);
+        &#125;<span class="hljs-keyword">else</span>&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;&#123;&#125;&quot;</span>,userId,<span class="hljs-string">&quot;秒杀失败&quot;</span>);
+        &#125;
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        e.printStackTrace();
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok();
+&#125;</code></pre></div>
 
 <blockquote>
 <p>注意：在业务层和AOP方法中，不能抛出任何异常， throw new RuntimeException()这些抛异常代码要注释掉。因为一旦程序抛出异常就会停止，导致消费秒杀队列进程终止！</p>
@@ -376,7 +823,90 @@
 </ul>
 <p><img src="https://mmbiz.qpic.cn/mmbiz_png/6mychickmupU5s2jJ2rNPSk92pXttrWN7QVspLsqttacbqibPJqJdW8z351tHAKSwWsSlnTQ4VPL8GIL2P8150kQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
 <h3 id="3-7-方式七（Disruptor队列）"><a href="#3-7-方式七（Disruptor队列）" class="headerlink" title="3.7.方式七（Disruptor队列）"></a>3.7.方式七（Disruptor队列）</h3><p>Disruptor是个高性能队列，研发的初衷是解决内存队列的延迟问题，在性能测试中发现竟然与I&#x2F;O操作处于同样的数量级，基于Disruptor开发的系统单线程能支撑每秒600万订单。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 事件生成工厂（用来初始化预分配事件对象）</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillEventFactory</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">EventFactory</span>&lt;SecondKillEvent&gt; &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> SecondKillEvent <span class="hljs-title function_">newInstance</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEvent</span>();<br>    &#125;<br>&#125;<br><span class="hljs-comment">// 事件对象（秒杀事件）</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillEvent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">serialVersionUID</span> <span class="hljs-operator">=</span> <span class="hljs-number">1L</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> seckillId;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> userId;<br><br> <span class="hljs-comment">// set/get方法略</span><br><br>&#125;<br><span class="hljs-comment">// 使用translator方式生产者</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillEventProducer</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> EventTranslatorVararg&lt;SecondKillEvent&gt; translator = (seckillEvent, seq, objs) -&gt; &#123;<br>        seckillEvent.setSeckillId((Long) objs[<span class="hljs-number">0</span>]);<br>        seckillEvent.setUserId((Long) objs[<span class="hljs-number">1</span>]);<br>    &#125;;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> RingBuffer&lt;SecondKillEvent&gt; ringBuffer;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">SecondKillEventProducer</span><span class="hljs-params">(RingBuffer&lt;SecondKillEvent&gt; ringBuffer)</span>&#123;<br>        <span class="hljs-built_in">this</span>.ringBuffer = ringBuffer;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">secondKill</span><span class="hljs-params">(<span class="hljs-type">long</span> seckillId, <span class="hljs-type">long</span> userId)</span>&#123;<br>        <span class="hljs-built_in">this</span>.ringBuffer.publishEvent(translator, seckillId, userId);<br>    &#125;<br>&#125;<br><span class="hljs-comment">// 消费者(秒杀处理器)</span><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillEventConsumer</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">EventHandler</span>&lt;SecondKillEvent&gt; &#123;<br><br><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">SecondKillService</span> <span class="hljs-variable">secondKillService</span> <span class="hljs-operator">=</span> (SecondKillService) SpringUtil.getBean(<span class="hljs-string">&quot;secondKillService&quot;</span>);<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onEvent</span><span class="hljs-params">(SecondKillEvent seckillEvent, <span class="hljs-type">long</span> seq, <span class="hljs-type">boolean</span> bool)</span> &#123;<br>        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByAop(seckillEvent.getSeckillId(), seckillEvent.getUserId());<br>        <span class="hljs-keyword">if</span>(result.equals(Result.ok(SecondKillStateEnum.SUCCESS)))&#123;<br>            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;&#123;&#125;&quot;</span>,seckillEvent.getUserId(),<span class="hljs-string">&quot;秒杀成功&quot;</span>);<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DisruptorUtil</span> &#123;<br><br>    <span class="hljs-keyword">static</span> Disruptor&lt;SecondKillEvent&gt; disruptor;<br><br>    <span class="hljs-keyword">static</span>&#123;<br>        <span class="hljs-type">SecondKillEventFactory</span> <span class="hljs-variable">factory</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEventFactory</span>();<br>        <span class="hljs-type">int</span> <span class="hljs-variable">ringBufferSize</span> <span class="hljs-operator">=</span> <span class="hljs-number">1024</span>;<br>        <span class="hljs-type">ThreadFactory</span> <span class="hljs-variable">threadFactory</span> <span class="hljs-operator">=</span> runnable -&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(runnable);<br>        disruptor = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Disruptor</span>&lt;&gt;(factory, ringBufferSize, threadFactory);<br>        disruptor.handleEventsWith(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEventConsumer</span>());<br>        disruptor.start();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">producer</span><span class="hljs-params">(SecondKillEvent kill)</span>&#123;<br>        RingBuffer&lt;SecondKillEvent&gt; ringBuffer = disruptor.getRingBuffer();<br>        <span class="hljs-type">SecondKillEventProducer</span> <span class="hljs-variable">producer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEventProducer</span>(ringBuffer);<br>        producer.secondKill(kill.getSeckillId(),kill.getUserId());<br>    &#125;<br>&#125;<br><span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式七——Disruptor队列&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/start/disruptor&quot;)</span><br><span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startDisruptor</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        log.info(<span class="hljs-string">&quot;开始秒杀方式七...&quot;</span>);<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;<br>        <span class="hljs-type">SecondKillEvent</span> <span class="hljs-variable">kill</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEvent</span>();<br>        kill.setSeckillId(skgId);<br>        kill.setUserId(userId);<br>        DisruptorUtil.producer(kill);<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        e.printStackTrace();<br>    &#125;<br>    <span class="hljs-keyword">return</span> Result.ok();<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-comment">// 事件生成工厂（用来初始化预分配事件对象）</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillEventFactory</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">EventFactory</span>&lt;SecondKillEvent&gt; &#123;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> SecondKillEvent <span class="hljs-title function_">newInstance</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEvent</span>();
+    &#125;
+&#125;
+<span class="hljs-comment">// 事件对象（秒杀事件）</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillEvent</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">serialVersionUID</span> <span class="hljs-operator">=</span> <span class="hljs-number">1L</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> seckillId;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> userId;
+
+ <span class="hljs-comment">// set/get方法略</span>
+
+&#125;
+<span class="hljs-comment">// 使用translator方式生产者</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillEventProducer</span> &#123;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> EventTranslatorVararg&lt;SecondKillEvent&gt; translator = (seckillEvent, seq, objs) -&gt; &#123;
+        seckillEvent.setSeckillId((Long) objs[<span class="hljs-number">0</span>]);
+        seckillEvent.setUserId((Long) objs[<span class="hljs-number">1</span>]);
+    &#125;;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> RingBuffer&lt;SecondKillEvent&gt; ringBuffer;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">SecondKillEventProducer</span><span class="hljs-params">(RingBuffer&lt;SecondKillEvent&gt; ringBuffer)</span>&#123;
+        <span class="hljs-built_in">this</span>.ringBuffer = ringBuffer;
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">secondKill</span><span class="hljs-params">(<span class="hljs-type">long</span> seckillId, <span class="hljs-type">long</span> userId)</span>&#123;
+        <span class="hljs-built_in">this</span>.ringBuffer.publishEvent(translator, seckillId, userId);
+    &#125;
+&#125;
+<span class="hljs-comment">// 消费者(秒杀处理器)</span>
+<span class="hljs-meta">@Slf4j</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondKillEventConsumer</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">EventHandler</span>&lt;SecondKillEvent&gt; &#123;
+
+
+    <span class="hljs-keyword">private</span> <span class="hljs-type">SecondKillService</span> <span class="hljs-variable">secondKillService</span> <span class="hljs-operator">=</span> (SecondKillService) SpringUtil.getBean(<span class="hljs-string">&quot;secondKillService&quot;</span>);
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onEvent</span><span class="hljs-params">(SecondKillEvent seckillEvent, <span class="hljs-type">long</span> seq, <span class="hljs-type">boolean</span> bool)</span> &#123;
+        <span class="hljs-type">Result</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> secondKillService.startSecondKillByAop(seckillEvent.getSeckillId(), seckillEvent.getUserId());
+        <span class="hljs-keyword">if</span>(result.equals(Result.ok(SecondKillStateEnum.SUCCESS)))&#123;
+            log.info(<span class="hljs-string">&quot;用户:&#123;&#125;&#123;&#125;&quot;</span>,seckillEvent.getUserId(),<span class="hljs-string">&quot;秒杀成功&quot;</span>);
+        &#125;
+    &#125;
+&#125;
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DisruptorUtil</span> &#123;
+
+    <span class="hljs-keyword">static</span> Disruptor&lt;SecondKillEvent&gt; disruptor;
+
+    <span class="hljs-keyword">static</span>&#123;
+        <span class="hljs-type">SecondKillEventFactory</span> <span class="hljs-variable">factory</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEventFactory</span>();
+        <span class="hljs-type">int</span> <span class="hljs-variable">ringBufferSize</span> <span class="hljs-operator">=</span> <span class="hljs-number">1024</span>;
+        <span class="hljs-type">ThreadFactory</span> <span class="hljs-variable">threadFactory</span> <span class="hljs-operator">=</span> runnable -&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(runnable);
+        disruptor = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Disruptor</span>&lt;&gt;(factory, ringBufferSize, threadFactory);
+        disruptor.handleEventsWith(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEventConsumer</span>());
+        disruptor.start();
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">producer</span><span class="hljs-params">(SecondKillEvent kill)</span>&#123;
+        RingBuffer&lt;SecondKillEvent&gt; ringBuffer = disruptor.getRingBuffer();
+        <span class="hljs-type">SecondKillEventProducer</span> <span class="hljs-variable">producer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEventProducer</span>(ringBuffer);
+        producer.secondKill(kill.getSeckillId(),kill.getUserId());
+    &#125;
+&#125;
+<span class="hljs-meta">@ApiOperation(value=&quot;秒杀实现方式七——Disruptor队列&quot;)</span>
+<span class="hljs-meta">@PostMapping(&quot;/start/disruptor&quot;)</span>
+<span class="hljs-keyword">public</span> Result <span class="hljs-title function_">startDisruptor</span><span class="hljs-params">(<span class="hljs-type">long</span> skgId)</span>&#123;
+    <span class="hljs-keyword">try</span> &#123;
+        log.info(<span class="hljs-string">&quot;开始秒杀方式七...&quot;</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextDouble() * (<span class="hljs-number">99999</span> - <span class="hljs-number">10000</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">10000</span>;
+        <span class="hljs-type">SecondKillEvent</span> <span class="hljs-variable">kill</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondKillEvent</span>();
+        kill.setSeckillId(skgId);
+        kill.setUserId(userId);
+        DisruptorUtil.producer(kill);
+    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+        e.printStackTrace();
+    &#125;
+    <span class="hljs-keyword">return</span> Result.ok();
+&#125;</code></pre></div>
 
 <p>经过测试，发现使用Disruptor队列队列，与自定义队列有着同样的问题，也会出现超卖的情况，但效率有所提高。</p>
 <h2 id="4-小结"><a href="#4-小结" class="headerlink" title="4. 小结"></a>4. 小结</h2><p>对于上面七种实现并发的方式，做一下总结：</p>

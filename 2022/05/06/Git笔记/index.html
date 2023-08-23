@@ -7,24 +7,26 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Li zhihao">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Git是什么 官方话：Git是一个免费的开源分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有事务。 简单来说就是用来管理团队开发的代码  为什么要学习Git 一句话说，你写代码要保存，就得用Git  常用操作这块是重要步骤，也是平时用的最多的命令。 一、本地仓库关联远程仓库（新建仓库） 12345678910111213git init # 初始化 git 仓库git remote a">
+    <meta name="description" content="Git是什么 官方话：Git是一个免费的开源分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有事务。 简单来说就是用来管理团队开发的代码  为什么要学习Git 一句话说，你写代码要保存，就得用Git  常用操作这块是重要步骤，也是平时用的最多的命令。 一、本地仓库关联远程仓库（新建仓库） git init # 初始化 git 仓库  git remote add origin 远程仓库链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git笔记">
 <meta property="og:url" content="http://example.com/2022/05/06/Git%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Lizhihao&#39;s Blog">
-<meta property="og:description" content="Git是什么 官方话：Git是一个免费的开源分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有事务。 简单来说就是用来管理团队开发的代码  为什么要学习Git 一句话说，你写代码要保存，就得用Git  常用操作这块是重要步骤，也是平时用的最多的命令。 一、本地仓库关联远程仓库（新建仓库） 12345678910111213git init # 初始化 git 仓库git remote a">
+<meta property="og:description" content="Git是什么 官方话：Git是一个免费的开源分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有事务。 简单来说就是用来管理团队开发的代码  为什么要学习Git 一句话说，你写代码要保存，就得用Git  常用操作这块是重要步骤，也是平时用的最多的命令。 一、本地仓库关联远程仓库（新建仓库） git init # 初始化 git 仓库  git remote add origin 远程仓库链">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-06T06:05:26.000Z">
-<meta property="article:modified_time" content="2023-08-14T11:10:40.293Z">
+<meta property="article:modified_time" content="2023-08-23T10:49:34.432Z">
 <meta property="article:author" content="Li zhihao">
 <meta property="article:tag" content="Git">
 <meta name="twitter:card" content="summary_large_image">
@@ -156,18 +158,6 @@
             </li>
           
         
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
         
           <li class="nav-item" id="search-btn">
             <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
@@ -282,10 +272,28 @@
 </ul>
 <h1 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h1><p><strong>这块是重要步骤，也是平时用的最多的命令。</strong></p>
 <p><strong>一、本地仓库关联远程仓库（新建仓库）</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">git init <span class="hljs-comment"># 初始化 git 仓库</span><br><br>git remote add origin 远程仓库链接地址 <span class="hljs-comment"># 将本地仓库和远程仓库关联</span><br><br>git push -u origin master <span class="hljs-comment">#本地编辑代码后提交至远程分支</span><br><br>PS: 第一次使用加上了 -u 参数，是推送内容并关联分支，之后推送直接使用git push即可，因为第一次已经将当前本地master分支和远程origin的master分支关联了<br><br>git push -u origin master <br>等同于<br>git push origin master //将当前分支提交到远程origin的master分支<br>加上<br>git branch --set-upstream-to=origin/master master//将远程仓库origin的master分支与本地仓库master分支关联<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs bash">git init <span class="hljs-comment"># 初始化 git 仓库</span>
+
+git remote add origin 远程仓库链接地址 <span class="hljs-comment"># 将本地仓库和远程仓库关联</span>
+
+git push -u origin master <span class="hljs-comment">#本地编辑代码后提交至远程分支</span>
+
+PS: 第一次使用加上了 -u 参数，是推送内容并关联分支，之后推送直接使用git push即可，因为第一次已经将当前本地master分支和远程origin的master分支关联了
+
+git push -u origin master 
+等同于
+git push origin master //将当前分支提交到远程origin的master分支
+加上
+git branch --set-upstream-to=origin/master master//将远程仓库origin的master分支与本地仓库master分支关联</code></pre></div>
 
 <p><strong>二、拉取远程分支到本地（已有远程仓库）</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> 远程仓库地址 <span class="hljs-comment"># 在本地下载远程仓库代码</span><br><br>git fetch origin 远程分支名 <span class="hljs-comment"># 将远程分支拉到本地</span><br><br>git checkout -b 本地分支名称 origin/远程分支名称 <span class="hljs-comment"># 本地关联远程分支，本地分支名可随意写</span><br><br>git pull origin <span class="hljs-comment"># 拉取远程分支代码</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> 远程仓库地址 <span class="hljs-comment"># 在本地下载远程仓库代码</span>
+
+git fetch origin 远程分支名 <span class="hljs-comment"># 将远程分支拉到本地</span>
+
+git checkout -b 本地分支名称 origin/远程分支名称 <span class="hljs-comment"># 本地关联远程分支，本地分支名可随意写</span>
+
+git pull origin <span class="hljs-comment"># 拉取远程分支代码</span></code></pre></div>
 
 <blockquote>
 <p>平时开发的话结合 IDEA 中的 Git 操作即可简单地完成提交（commit）和推送（push）操作。</p>
@@ -328,35 +336,40 @@
 <ul>
 <li>创建分支<code>other</code>,切换到<code>other</code>分支。</li>
 </ul>
-<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gml">复制代码git branch <span class="hljs-symbol">other</span><br>git checkout <span class="hljs-symbol">other</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs gml">复制代码git branch <span class="hljs-symbol">other</span>
+git checkout <span class="hljs-symbol">other</span></code></pre></div>
 
 <ul>
 <li>查看当前所有分支</li>
 </ul>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">复制代码git branch<br>markdown复制代码* other<br>  <span class="hljs-literal">master</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs crmsh">复制代码git branch
+markdown复制代码* other
+  <span class="hljs-literal">master</span></code></pre></div>
 
 <p>当前的分支会有一个<code>*</code></p>
 <ul>
 <li>用<code>other</code>提交</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">sql</span>复制代码git <span class="hljs-keyword">add</span> .<span class="hljs-operator">/</span>xxx<span class="hljs-operator">/</span><br>git <span class="hljs-keyword">commit</span> <span class="hljs-operator">-</span>m &quot;xxx&quot;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">sql</span>复制代码git <span class="hljs-keyword">add</span> .<span class="hljs-operator">/</span>xxx<span class="hljs-operator">/</span>
+git <span class="hljs-keyword">commit</span> <span class="hljs-operator">-</span>m &quot;xxx&quot;</code></pre></div>
 
 <ul>
 <li><code>other</code>分支完成，切换回<code>master</code></li>
 </ul>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">复制代码git checkout <span class="hljs-literal">master</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs crmsh">复制代码git checkout <span class="hljs-literal">master</span></code></pre></div>
 
 <ul>
 <li>此时，master分支上并没有<code>other</code>的文件，因为分支还没有合并。</li>
 <li><strong>合并分支</strong></li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">sql</span><br>复制代码git <span class="hljs-keyword">merge</span> other<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">sql</span>
+复制代码git <span class="hljs-keyword">merge</span> other</code></pre></div>
 
 <ul>
 <li>合并完成之后，就可以在master分支上查看到文件了。</li>
 <li>删除<code>other</code>分支。</li>
 </ul>
-<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gml">复制代码git branch -d <span class="hljs-symbol">other</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs gml">复制代码git branch -d <span class="hljs-symbol">other</span></code></pre></div>
 
 <ul>
 <li>我由此想到，在以后工作中，应该是一个开放小组共同开发一个项目，组长会创建很多分支，每一个分支可以交给一个人去开发某一个功能，一个小组共同开发而且不会相互干扰。谁的功能完成了，可以由组长合并一下完成了的分支。哦，完美！</li>
@@ -403,10 +416,10 @@
 <li><p><code>git pull</code> 把最新的提交从远程仓库中抓取下来，在本地合并，解决冲突。在进行<code>git pull</code></p>
 </li>
 <li><p>如果</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">git pull</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">git pull</span></code></pre></div>
 
 <p> 也失败了，还要指定分支之间的链接，这一步Git会提醒你怎么做。然后再</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">git pull</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">git pull</span></code></pre></div>
 
 <p>。</p>
 <blockquote>
@@ -530,7 +543,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%B7%A5%E5%85%B7/" class="category-chain-item">工具</a>
+  <a href="/categories/%E9%80%9A%E7%94%A8/" class="category-chain-item">通用</a>
   
   
 

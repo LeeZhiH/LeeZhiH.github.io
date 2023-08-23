@@ -7,10 +7,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Li zhihao">
@@ -156,18 +158,6 @@
             </li>
           
         
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
         
           <li class="nav-item" id="search-btn">
             <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
@@ -220,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.7k 字
+          2.6k 字
         
       </span>
     
@@ -231,7 +221,7 @@
         
         
         
-          23 分钟
+          22 分钟
         
       </span>
     
@@ -379,93 +369,112 @@
 <h2 id="数据库的基本操作"><a href="#数据库的基本操作" class="headerlink" title="数据库的基本操作"></a>数据库的基本操作</h2><h3 id="数据库相关"><a href="#数据库相关" class="headerlink" title="数据库相关"></a>数据库相关</h3><ul>
 <li>创建数据库</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> DATABASE <span class="hljs-operator">&lt;</span>数据库名<span class="hljs-operator">&gt;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> DATABASE <span class="hljs-operator">&lt;</span>数据库名<span class="hljs-operator">&gt;</span>;</code></pre></div>
 
 <ul>
 <li>删除数据库</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">DROP</span> DATABASE <span class="hljs-operator">&lt;</span>数据库名<span class="hljs-operator">&gt;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">DROP</span> DATABASE <span class="hljs-operator">&lt;</span>数据库名<span class="hljs-operator">&gt;</span>;</code></pre></div>
 
 <ul>
 <li>列出数据库</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> DATABASES;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> DATABASES;</code></pre></div>
 
 <ul>
 <li>切换数据库</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">USE <span class="hljs-operator">&lt;</span>数据库名<span class="hljs-operator">&gt;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql">USE <span class="hljs-operator">&lt;</span>数据库名<span class="hljs-operator">&gt;</span>;</code></pre></div>
 
 <h3 id="数据表相关"><a href="#数据表相关" class="headerlink" title="数据表相关"></a>数据表相关</h3><ul>
 <li>创建表</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> (<br>    <span class="hljs-operator">&lt;</span>列名<span class="hljs-number">1</span><span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>类型<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>约束<span class="hljs-operator">&gt;</span>,<br>    <span class="hljs-operator">&lt;</span>列名<span class="hljs-number">2</span><span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>类型<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>约束<span class="hljs-operator">&gt;</span>,<br>        ...<br>        ...<br>        ...<br>    <span class="hljs-operator">&lt;</span>表的约束<span class="hljs-number">1</span><span class="hljs-operator">&gt;</span>,<br>    <span class="hljs-operator">&lt;</span>表的约束<span class="hljs-number">2</span><span class="hljs-operator">&gt;</span>,<br>    ....<br>);<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> (
+    <span class="hljs-operator">&lt;</span>列名<span class="hljs-number">1</span><span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>类型<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>约束<span class="hljs-operator">&gt;</span>,
+    <span class="hljs-operator">&lt;</span>列名<span class="hljs-number">2</span><span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>类型<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>约束<span class="hljs-operator">&gt;</span>,
+        ...
+        ...
+        ...
+    <span class="hljs-operator">&lt;</span>表的约束<span class="hljs-number">1</span><span class="hljs-operator">&gt;</span>,
+    <span class="hljs-operator">&lt;</span>表的约束<span class="hljs-number">2</span><span class="hljs-operator">&gt;</span>,
+    ....
+);</code></pre></div>
 
 <ul>
 <li>删除表</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span>;</code></pre></div>
 
 <ul>
 <li><p>更新表</p>
 <ul>
 <li><p>新增列</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-operator">&lt;</span>列名<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>类型<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>约束<span class="hljs-operator">&gt;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-operator">&lt;</span>列名<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>类型<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>约束<span class="hljs-operator">&gt;</span>;</code></pre></div>
 </li>
 <li><p>删除列</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-operator">&lt;</span>列名<span class="hljs-operator">&gt;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-operator">&lt;</span>列名<span class="hljs-operator">&gt;</span>;</code></pre></div>
 </li>
 <li><p>修改列</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> MODIFY <span class="hljs-keyword">COLUMN</span> <span class="hljs-operator">&lt;</span>列名<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>类型<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>约束<span class="hljs-operator">&gt;</span>;<br></code></pre></td></tr></table></figure></li>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> MODIFY <span class="hljs-keyword">COLUMN</span> <span class="hljs-operator">&lt;</span>列名<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>类型<span class="hljs-operator">&gt;</span> <span class="hljs-operator">&lt;</span>约束<span class="hljs-operator">&gt;</span>;</code></pre></div></li>
 </ul>
 </li>
 <li><p>插入数据</p>
 </li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">VALUES</span> (值<span class="hljs-number">1</span>, 值<span class="hljs-number">2</span>,....);<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">VALUES</span> (值<span class="hljs-number">1</span>, 值<span class="hljs-number">2</span>,....);</code></pre></div>
 
 <p>指定所要插入数据的列:</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span>(列<span class="hljs-number">1</span>, 列<span class="hljs-number">2</span>,...) <span class="hljs-keyword">VALUES</span> (值<span class="hljs-number">1</span>, 值<span class="hljs-number">2</span>,....);<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-operator">&lt;</span>表名<span class="hljs-operator">&gt;</span>(列<span class="hljs-number">1</span>, 列<span class="hljs-number">2</span>,...) <span class="hljs-keyword">VALUES</span> (值<span class="hljs-number">1</span>, 值<span class="hljs-number">2</span>,....);</code></pre></div>
 
 <h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><ul>
 <li>创建数据库</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> DATABASE test;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> DATABASE test;</code></pre></div>
 
 <ul>
 <li>显示数据库</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> DATABASES;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> DATABASES;</code></pre></div>
 
 <ul>
 <li>切换数据库</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">use test;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql">use test;</code></pre></div>
 
 <ul>
 <li>创建数据表</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> `persons` (<br>  `id` <span class="hljs-type">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> AUTO_INCREMENT,<br>  `name` <span class="hljs-type">varchar</span>(<span class="hljs-number">64</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;&#x27;</span> COMMENT <span class="hljs-string">&#x27;姓名&#x27;</span>,<br>  `age` <span class="hljs-type">int</span>(<span class="hljs-number">11</span>) COMMENT <span class="hljs-string">&#x27;年龄&#x27;</span>,<br>  `gender` <span class="hljs-type">varchar</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;male&#x27;</span> COMMENT <span class="hljs-string">&#x27;性别&#x27;</span>,<br>  `address` <span class="hljs-type">varchar</span>(<span class="hljs-number">64</span>) COMMENT <span class="hljs-string">&#x27;地址&#x27;</span>,<br>  `create_time` datetime <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> COMMENT <span class="hljs-string">&#x27;创建时间&#x27;</span>,<br>  <span class="hljs-keyword">PRIMARY</span> KEY (`id`) <span class="hljs-keyword">USING</span> BTREE<br>) ENGINE<span class="hljs-operator">=</span>InnoDB <span class="hljs-keyword">DEFAULT</span> CHARSET<span class="hljs-operator">=</span>utf8mb4 COMMENT<span class="hljs-operator">=</span><span class="hljs-string">&#x27;人员信息表&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> `persons` (
+  `id` <span class="hljs-type">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> AUTO_INCREMENT,
+  `name` <span class="hljs-type">varchar</span>(<span class="hljs-number">64</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;&#x27;</span> COMMENT <span class="hljs-string">&#x27;姓名&#x27;</span>,
+  `age` <span class="hljs-type">int</span>(<span class="hljs-number">11</span>) COMMENT <span class="hljs-string">&#x27;年龄&#x27;</span>,
+  `gender` <span class="hljs-type">varchar</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;male&#x27;</span> COMMENT <span class="hljs-string">&#x27;性别&#x27;</span>,
+  `address` <span class="hljs-type">varchar</span>(<span class="hljs-number">64</span>) COMMENT <span class="hljs-string">&#x27;地址&#x27;</span>,
+  `create_time` datetime <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> COMMENT <span class="hljs-string">&#x27;创建时间&#x27;</span>,
+  <span class="hljs-keyword">PRIMARY</span> KEY (`id`) <span class="hljs-keyword">USING</span> BTREE
+) ENGINE<span class="hljs-operator">=</span>InnoDB <span class="hljs-keyword">DEFAULT</span> CHARSET<span class="hljs-operator">=</span>utf8mb4 COMMENT<span class="hljs-operator">=</span><span class="hljs-string">&#x27;人员信息表&#x27;</span>;</code></pre></div>
 
 <ul>
 <li>新增列</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> persons <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> mobile <span class="hljs-type">varchar</span>(<span class="hljs-number">64</span>) COMMENT <span class="hljs-string">&#x27;手机号&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> persons <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> mobile <span class="hljs-type">varchar</span>(<span class="hljs-number">64</span>) COMMENT <span class="hljs-string">&#x27;手机号&#x27;</span>;</code></pre></div>
 
 <ul>
 <li>删除列</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> persons <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">COLUMN</span> mobile;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> persons <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">COLUMN</span> mobile;</code></pre></div>
 
 <ul>
 <li>修改列</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> persons MODIFY <span class="hljs-keyword">COLUMN</span> age <span class="hljs-type">varchar</span>(<span class="hljs-number">11</span>) COMMENT <span class="hljs-string">&#x27;年龄&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> persons MODIFY <span class="hljs-keyword">COLUMN</span> age <span class="hljs-type">varchar</span>(<span class="hljs-number">11</span>) COMMENT <span class="hljs-string">&#x27;年龄&#x27;</span>;</code></pre></div>
 
 <ul>
 <li>插入数据</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> persons <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;Alice&#x27;</span>,<span class="hljs-number">24</span>,<span class="hljs-string">&#x27;female&#x27;</span>,<span class="hljs-string">&#x27;Beijing&#x27;</span>,<span class="hljs-string">&#x27;2021-10-29 12:00:00&#x27;</span>);<br><br><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> persons(name,age,gender,address) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;Bob&#x27;</span>,<span class="hljs-number">25</span>,<span class="hljs-string">&#x27;male&#x27;</span>,<span class="hljs-string">&#x27;Shanghai&#x27;</span>);<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> persons <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;Alice&#x27;</span>,<span class="hljs-number">24</span>,<span class="hljs-string">&#x27;female&#x27;</span>,<span class="hljs-string">&#x27;Beijing&#x27;</span>,<span class="hljs-string">&#x27;2021-10-29 12:00:00&#x27;</span>);
+
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> persons(name,age,gender,address) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;Bob&#x27;</span>,<span class="hljs-number">25</span>,<span class="hljs-string">&#x27;male&#x27;</span>,<span class="hljs-string">&#x27;Shanghai&#x27;</span>);</code></pre></div>
 
                 
               </div>
