@@ -21,7 +21,7 @@
     <meta name="description" content="前言之前一直以为Mysql可重复读隔离级别，已经解决了幻读的问题，今天却看到一篇文章列举了该隔离级别下出现幻读的场景。这才意识到原来Mysql可重复读并没有完全解决幻读问题。所以在此总结一下该问题。 什么是幻读：当同一个查询在不同的时间产生不同的结果集时，事务中就会出现所谓的幻象问题。例如，如果 SELECT 执行了两次，但第二次返回了第一次没有返回的行，则该行是“幻像”行。 通俗点将，就是两个S">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql可重复读为什么不能完全解决幻读">
-<meta property="og:url" content="http://example.com/2023/04/28/Mysql%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%AE%8C%E5%85%A8%E8%A7%A3%E5%86%B3%E5%B9%BB%E8%AF%BB/index.html">
+<meta property="og:url" content="http://lee-zhihao.gitee.io/2023/04/28/Mysql%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%AE%8C%E5%85%A8%E8%A7%A3%E5%86%B3%E5%B9%BB%E8%AF%BB/index.html">
 <meta property="og:site_name" content="Lizhihao&#39;s Blog">
 <meta property="og:description" content="前言之前一直以为Mysql可重复读隔离级别，已经解决了幻读的问题，今天却看到一篇文章列举了该隔离级别下出现幻读的场景。这才意识到原来Mysql可重复读并没有完全解决幻读问题。所以在此总结一下该问题。 什么是幻读：当同一个查询在不同的时间产生不同的结果集时，事务中就会出现所谓的幻象问题。例如，如果 SELECT 执行了两次，但第二次返回了第一次没有返回的行，则该行是“幻像”行。 通俗点将，就是两个S">
 <meta property="og:locale" content="zh_CN">
@@ -71,7 +71,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"lee-zhihao.gitee.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -363,7 +363,7 @@ mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</
   <div class="license-box my-3">
     <div class="license-title">
       <div>Mysql可重复读为什么不能完全解决幻读</div>
-      <div>http://example.com/2023/04/28/Mysql可重复读为什么不能完全解决幻读/</div>
+      <div>http://lee-zhihao.gitee.io/2023/04/28/Mysql可重复读为什么不能完全解决幻读/</div>
     </div>
     <div class="license-meta">
       
