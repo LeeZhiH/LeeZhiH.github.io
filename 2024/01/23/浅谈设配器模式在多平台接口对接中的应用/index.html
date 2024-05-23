@@ -18,22 +18,22 @@
   <meta name="author" content="Li zhihao">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言今天在公司恰巧与同事聊到了日期格式化的问题，被提醒使用SimpleDateFormat格式化信息的时候，一定别手误写成“YYYY-MM-dd”,小写大写区别很大，听说之前公司有员工可能手误写错了这个，后面导致了很多问题。 正文于是自己写了个测试验证一下该问题。 测试类public static void main(string[] args) throws ParseException &amp;#1">
+    <meta name="description" content="前言在工作中有个需求是需要对接多个平台的同类型多个接口，且需求1.0只要求对接部分平台部分接口，后续按需对接，最开始看需求时只想到了用最原始的方式直接写接口和任务，但是后面编写的过程中发现对接多个平台接口许多操作本质上是一致的，却需要写多遍，且代码超级容易冗余，于是仔细思考了该如何优化这部分结构，最终想到的是类似适配器的模式，于是查了一些资料，加深了对该设计模式的了解。 一、什么是适配器模式适配器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="日期格式化YYYY可能出现的问题">
-<meta property="og:url" content="http://lee-zhihao.gitee.io/2023/08/23/%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E5%8C%96YYYY%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:title" content="浅谈设配器模式在多平台接口对接中的应用">
+<meta property="og:url" content="http://lee-zhihao.gitee.io/2024/01/23/%E6%B5%85%E8%B0%88%E8%AE%BE%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%8E%A5%E5%8F%A3%E5%AF%B9%E6%8E%A5%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/index.html">
 <meta property="og:site_name" content="Lizhihao&#39;s Blog">
-<meta property="og:description" content="前言今天在公司恰巧与同事聊到了日期格式化的问题，被提醒使用SimpleDateFormat格式化信息的时候，一定别手误写成“YYYY-MM-dd”,小写大写区别很大，听说之前公司有员工可能手误写错了这个，后面导致了很多问题。 正文于是自己写了个测试验证一下该问题。 测试类public static void main(string[] args) throws ParseException &amp;#1">
+<meta property="og:description" content="前言在工作中有个需求是需要对接多个平台的同类型多个接口，且需求1.0只要求对接部分平台部分接口，后续按需对接，最开始看需求时只想到了用最原始的方式直接写接口和任务，但是后面编写的过程中发现对接多个平台接口许多操作本质上是一致的，却需要写多遍，且代码超级容易冗余，于是仔细思考了该如何优化这部分结构，最终想到的是类似适配器的模式，于是查了一些资料，加深了对该设计模式的了解。 一、什么是适配器模式适配器">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-08-23T10:51:40.000Z">
-<meta property="article:modified_time" content="2023-08-23T10:52:10.506Z">
+<meta property="article:published_time" content="2024-01-23T09:15:07.000Z">
+<meta property="article:modified_time" content="2024-05-23T09:15:56.863Z">
 <meta property="article:author" content="Li zhihao">
-<meta property="article:tag" content="问题记录">
+<meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>日期格式化YYYY可能出现的问题 - Lizhihao&#39;s Blog</title>
+  <title>浅谈设配器模式在多平台接口对接中的应用 - Lizhihao&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="日期格式化YYYY可能出现的问题"></span>
+            <span id="subtitle" data-typed-text="浅谈设配器模式在多平台接口对接中的应用"></span>
           
         </div>
 
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-08-23 18:51" pubdate>
-          2023年8月23日 晚上
+        <time datetime="2024-01-23 17:15" pubdate>
+          2024年1月23日 下午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          933 字
+          3.1k 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          8 分钟
+          27 分钟
         
       </span>
     
@@ -258,42 +258,116 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">日期格式化YYYY可能出现的问题</h1>
+            <h1 id="seo-header">浅谈设配器模式在多平台接口对接中的应用</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今天在公司恰巧与同事聊到了日期格式化的问题，被提醒使用SimpleDateFormat格式化信息的时候，一定别手误写成“YYYY-MM-dd”,小写大写区别很大，听说之前公司有员工可能手误写错了这个，后面导致了很多问题。</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>于是自己写了个测试验证一下该问题。</p>
-<h3 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h3><div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(string[] args)</span> <span class="hljs-keyword">throws</span> ParseException &#123;
-    <span class="hljs-type">SimpleDateFormat</span> <span class="hljs-variable">sdf</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>( pattern: <span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>);
-    <span class="hljs-type">string</span> <span class="hljs-variable">datestr</span> <span class="hljs-operator">=</span><span class="hljs-string">&quot;2023-12-31 23:59:59&quot;</span>;
-    <span class="hljs-type">Date</span> <span class="hljs-variable">date</span> <span class="hljs-operator">=</span> sdf.parse(datestr);
-    
-    <span class="hljs-type">string</span> <span class="hljs-variable">yearLowercase</span> <span class="hljs-operator">=</span> sdf.format(date); <span class="hljs-comment">// 使用小写的yyyy格式获取当前年份</span>
-    System.err.println(<span class="hljs-string">&quot;Lowercase: &quot;</span> + yearLowercase);
-    
-    <span class="hljs-type">SimpleDateFormat</span> <span class="hljs-variable">sdf2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>( pattern: <span class="hljs-string">&quot;YYYY-MM-dd HH:mm:ss&quot;</span>);
-    <span class="hljs-type">string</span> <span class="hljs-variable">yearUppercase</span> <span class="hljs-operator">=</span> sdf2.format(date); <span class="hljs-comment">// 使用大写的YYYY格式获取当前基于周的年份</span>
-    System.err.println(<span class="hljs-string">&quot;Uppercase: &quot;</span> + yearUppercase);
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在工作中有个需求是需要对接多个平台的同类型多个接口，且需求1.0只要求对接部分平台部分接口，后续按需对接，最开始看需求时只想到了用最原始的方式直接写接口和任务，但是后面编写的过程中发现对接多个平台接口许多操作本质上是一致的，却需要写多遍，且代码超级容易冗余，于是仔细思考了该如何优化这部分结构，最终想到的是类似适配器的模式，于是查了一些资料，加深了对该设计模式的了解。</p>
+<h2 id="一、什么是适配器模式"><a href="#一、什么是适配器模式" class="headerlink" title="一、什么是适配器模式"></a>一、什么是适配器模式</h2><p>适配器模式是结构型设计模式之一。将一个类的接口转换成客户希望的另外一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以在一起工作。</p>
+<h2 id="二、模式的角色"><a href="#二、模式的角色" class="headerlink" title="二、模式的角色"></a>二、模式的角色</h2><p>目标接口（Target）：客户所期待的接口。目标可以是具体的或抽象的类，也可以是接口。（或者说标准，已经确定了的接口）</p>
+<p>需要适配的类（Adaptee）：需要适配的类或适配者类。（标准不能完成任务，需要通过适配新的类才能达到完成新的任务）</p>
+<p>适配器（Adapter）：通过包装一个需要适配的对象（Adaptee），把原接口转换成目标接口</p>
+<h2 id="三、模式的优缺点"><a href="#三、模式的优缺点" class="headerlink" title="三、模式的优缺点"></a>三、模式的优缺点</h2><p>该模式的主要优点如下。</p>
+<ul>
+<li>客户端通过适配器可以透明地调用目标接口。</li>
+<li>复用了现存的类，程序员不需要修改原有代码而重用现有的适配者类。</li>
+<li>将目标类和适配者类解耦，解决了目标类和适配者类接口不一致的问题。</li>
+<li>在很多业务场景中符合开闭原则。</li>
+</ul>
+<p>其缺点是：</p>
+<ul>
+<li>适配器编写过程需要结合业务场景全面考虑，可能会增加系统的复杂性。</li>
+<li>增加代码阅读难度，降低代码可读性，过多使用适配器会使系统代码变得凌乱。</li>
+</ul>
+<h2 id="四、实际应用举例"><a href="#四、实际应用举例" class="headerlink" title="四、实际应用举例"></a>四、实际应用举例</h2><p>我们假设存在两个外卖平台：饿了么（Eleme）和美团外卖（Meituan），它们提供的接口不同，我们需要将它们的配送范围接口适配为统一的接口。</p>
+<p>首先，我们定义接口<code>DeliveryRangeInterface</code>表示配送范围的操作，包括获取、修改、新增、删除：</p>
+<div class="code-wrapper"><pre><code class="hljs java">javapublic <span class="hljs-keyword">interface</span> <span class="hljs-title class_">DeliveryRangeInterface</span> &#123;
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">getDeliveryRange</span><span class="hljs-params">()</span>;
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateDeliveryRange</span><span class="hljs-params">()</span>;
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">addDeliveryRange</span><span class="hljs-params">()</span>;
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteDeliveryRange</span><span class="hljs-params">()</span>;
 &#125;</code></pre></div>
 
-<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>out:</p>
-<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">Lowercase</span>: <span class="hljs-number">2023</span>-<span class="hljs-number">12</span>-<span class="hljs-number">31</span> <span class="hljs-number">23</span>:<span class="hljs-number">59</span>:<span class="hljs-number">59</span>
-<span class="hljs-attribute">Uppercase</span>: <span class="hljs-number">2024</span>-<span class="hljs-number">12</span>-<span class="hljs-number">31</span> <span class="hljs-number">23</span>:<span class="hljs-number">59</span>:<span class="hljs-number">59</span></code></pre></div>
+<p>接着，我们实现饿了么和美团外卖的配送范围接口：</p>
+<div class="code-wrapper"><pre><code class="hljs java">javapublic <span class="hljs-keyword">class</span> <span class="hljs-title class_">ElemeDeliveryRange</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">fetchElemeDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-comment">// Implementation for fetching Eleme delivery range</span>
+    &#125;
 
-<blockquote>
-<p>很明显，使用YYYY时，2023年变成了2024年，在正常情况下可能没问题，但是在跨年的时候大概率就会有问题了。</p>
-</blockquote>
-<blockquote>
-<p><strong>查找了一下资料，原因比较简单，与小写的yyyy不同，大写的YYYY表示一个基于周的年份。它是根据周计算的年份，而不是基于日历的年份。通常情况下，两者的结果是相同的，但在跨年的第一周或最后一周可能会有差异。</strong></p>
-</blockquote>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
-<ol>
-<li>日期时间格式统一使用yyyy小写；</li>
-<li>日期格式要规定大家都引用定义好的工具类，避免有人手误打错。</li>
-</ol>
-</blockquote>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateElemeDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-comment">// Implementation for updating Eleme delivery range</span>
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">insertElemeDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-comment">// Implementation for inserting Eleme delivery range</span>
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">removeElemeDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-comment">// Implementation for removing Eleme delivery range</span>
+    &#125;
+&#125;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MeituanDeliveryRange</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">fetchMeituanDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-comment">// Implementation for fetching Meituan delivery range</span>
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateMeituanDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-comment">// Implementation for updating Meituan delivery range</span>
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">insertMeituanDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-comment">// Implementation for inserting Meituan delivery range</span>
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">removeMeituanDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-comment">// Implementation for removing Meituan delivery range</span>
+    &#125;
+&#125;</code></pre></div>
+
+<p>接下来，我们创建适配器类<code>DeliveryRangeAdapter</code>来适配两个外卖平台的接口：</p>
+<div class="code-wrapper"><pre><code class="hljs java">javapublic <span class="hljs-keyword">class</span> <span class="hljs-title class_">DeliveryRangeAdapter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">DeliveryRangeInterface</span> &#123;
+    <span class="hljs-keyword">private</span> ElemeDeliveryRange elemeDeliveryRange;
+    <span class="hljs-keyword">private</span> MeituanDeliveryRange meituanDeliveryRange;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">DeliveryRangeAdapter</span><span class="hljs-params">(ElemeDeliveryRange elemeDeliveryRange, MeituanDeliveryRange meituanDeliveryRange)</span> &#123;
+        <span class="hljs-built_in">this</span>.elemeDeliveryRange = elemeDeliveryRange;
+        <span class="hljs-built_in">this</span>.meituanDeliveryRange = meituanDeliveryRange;
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        elemeDeliveryRange.fetchElemeDeliveryRange();
+        meituanDeliveryRange.fetchMeituanDeliveryRange();
+        <span class="hljs-comment">// 合并结果集</span>
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        elemeDeliveryRange.updateElemeDeliveryRange();
+        meituanDeliveryRange.updateMeituanDeliveryRange();
+        <span class="hljs-comment">// 合并结果集</span>
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        elemeDeliveryRange.insertElemeDeliveryRange();
+        meituanDeliveryRange.insertMeituanDeliveryRange();
+        <span class="hljs-comment">// 合并结果集</span>
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteDeliveryRange</span><span class="hljs-params">()</span> &#123;
+        elemeDeliveryRange.removeElemeDeliveryRange();
+        meituanDeliveryRange.removeMeituanDeliveryRange();
+        <span class="hljs-comment">// 合并结果集</span>
+    &#125;
+&#125;</code></pre></div>
+
+<p>使用适配器模式，我们可以通过<code>DeliveryRangeAdapter</code>适配不同外卖平台的接口，使其符合<code>DeliveryRangeInterface</code>的规范，实现对接各大外卖平台配送范围的统一操作。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​	使用适配器模式用于将一个类的接口转换为另一个接口，以满足客户端的期望，主要解决了两个已有接口之间不兼容的问题，使得他们能够协同工作而无需修改已有代码。</p>
+<p>   在实际使用中，如果遇到需要对接第三方服务接口，且第三方接口与本地接口不兼容时，可以考虑使用该设计模式将接口转化为我们的期望，或是在对接多方服务时，本地接口与第三方接口差异性大，考虑后续拓展对接问题，可以提前考虑问题，将代码结构设计好，方便后续拓展与修改，从而做到无缝集成。</p>
 
                 
               </div>
@@ -312,7 +386,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="category-chain-item">问题记录</a>
+  <a href="/categories/%E5%90%8E%E7%AB%AF/" class="category-chain-item">后端</a>
   
   
 
@@ -327,7 +401,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="print-no-link">#问题记录</a>
+        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="print-no-link">#设计模式</a>
       
     </div>
   
@@ -339,8 +413,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>日期格式化YYYY可能出现的问题</div>
-      <div>http://lee-zhihao.gitee.io/2023/08/23/日期格式化YYYY可能出现的问题/</div>
+      <div>浅谈设配器模式在多平台接口对接中的应用</div>
+      <div>http://lee-zhihao.gitee.io/2024/01/23/浅谈设配器模式在多平台接口对接中的应用/</div>
     </div>
     <div class="license-meta">
       
@@ -352,7 +426,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年8月23日</div>
+          <div>2024年1月23日</div>
         </div>
       
       
@@ -384,9 +458,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/23/%E6%B5%85%E8%B0%88%E8%AE%BE%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%8E%A5%E5%8F%A3%E5%AF%B9%E6%8E%A5%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/" title="浅谈设配器模式在多平台接口对接中的应用">
+                      <a href="/2024/02/01/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%8B%86%E5%88%86%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E8%B7%B5/" title="多线程拆分查询的实践">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">浅谈设配器模式在多平台接口对接中的应用</span>
+                        <span class="hidden-mobile">多线程拆分查询的实践</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -394,8 +468,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/05/Oracle-HWM%E9%AB%98%E6%B0%B4%E4%BD%8D%E8%A7%A3%E8%AF%BB/" title="Oracle-HWM高水位解读">
-                        <span class="hidden-mobile">Oracle-HWM高水位解读</span>
+                      <a href="/2023/08/23/%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E5%8C%96YYYY%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/" title="日期格式化YYYY可能出现的问题">
+                        <span class="hidden-mobile">日期格式化YYYY可能出现的问题</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

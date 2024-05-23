@@ -18,22 +18,22 @@
   <meta name="author" content="Li zhihao">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言今天在公司恰巧与同事聊到了日期格式化的问题，被提醒使用SimpleDateFormat格式化信息的时候，一定别手误写成“YYYY-MM-dd”,小写大写区别很大，听说之前公司有员工可能手误写错了这个，后面导致了很多问题。 正文于是自己写了个测试验证一下该问题。 测试类public static void main(string[] args) throws ParseException &amp;#1">
+    <meta name="description" content="前言背景是公司要改一个实时查询大量数据并统计的报表接口，原本接口只展示当天到30天内的订单数据，但是需求变更为最多90天的数据，且源数据获取难度变大，需要多两张表去做。这也就导致直接复杂SQL出来的结果虽然能满足数据需求，但是不能满足性能需求，大量数据查询时间最多到达100+秒，优先尝试SQL优化效果都达不到要求。因为需要实时性，所以我试着采用了多线程拆分查询最后去合并数据的方式满足性能需求。 示">
 <meta property="og:type" content="article">
-<meta property="og:title" content="日期格式化YYYY可能出现的问题">
-<meta property="og:url" content="http://lee-zhihao.gitee.io/2023/08/23/%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E5%8C%96YYYY%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:title" content="多线程拆分查询的实践">
+<meta property="og:url" content="http://lee-zhihao.gitee.io/2024/02/01/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%8B%86%E5%88%86%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E8%B7%B5/index.html">
 <meta property="og:site_name" content="Lizhihao&#39;s Blog">
-<meta property="og:description" content="前言今天在公司恰巧与同事聊到了日期格式化的问题，被提醒使用SimpleDateFormat格式化信息的时候，一定别手误写成“YYYY-MM-dd”,小写大写区别很大，听说之前公司有员工可能手误写错了这个，后面导致了很多问题。 正文于是自己写了个测试验证一下该问题。 测试类public static void main(string[] args) throws ParseException &amp;#1">
+<meta property="og:description" content="前言背景是公司要改一个实时查询大量数据并统计的报表接口，原本接口只展示当天到30天内的订单数据，但是需求变更为最多90天的数据，且源数据获取难度变大，需要多两张表去做。这也就导致直接复杂SQL出来的结果虽然能满足数据需求，但是不能满足性能需求，大量数据查询时间最多到达100+秒，优先尝试SQL优化效果都达不到要求。因为需要实时性，所以我试着采用了多线程拆分查询最后去合并数据的方式满足性能需求。 示">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-08-23T10:51:40.000Z">
-<meta property="article:modified_time" content="2023-08-23T10:52:10.506Z">
+<meta property="article:published_time" content="2024-02-01T09:10:45.000Z">
+<meta property="article:modified_time" content="2024-05-23T09:12:17.381Z">
 <meta property="article:author" content="Li zhihao">
-<meta property="article:tag" content="问题记录">
+<meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>日期格式化YYYY可能出现的问题 - Lizhihao&#39;s Blog</title>
+  <title>多线程拆分查询的实践 - Lizhihao&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="日期格式化YYYY可能出现的问题"></span>
+            <span id="subtitle" data-typed-text="多线程拆分查询的实践"></span>
           
         </div>
 
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-08-23 18:51" pubdate>
-          2023年8月23日 晚上
+        <time datetime="2024-02-01 17:10" pubdate>
+          2024年2月1日 下午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          933 字
+          2k 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          8 分钟
+          17 分钟
         
       </span>
     
@@ -258,42 +258,73 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">日期格式化YYYY可能出现的问题</h1>
+            <h1 id="seo-header">多线程拆分查询的实践</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今天在公司恰巧与同事聊到了日期格式化的问题，被提醒使用SimpleDateFormat格式化信息的时候，一定别手误写成“YYYY-MM-dd”,小写大写区别很大，听说之前公司有员工可能手误写错了这个，后面导致了很多问题。</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>于是自己写了个测试验证一下该问题。</p>
-<h3 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h3><div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(string[] args)</span> <span class="hljs-keyword">throws</span> ParseException &#123;
-    <span class="hljs-type">SimpleDateFormat</span> <span class="hljs-variable">sdf</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>( pattern: <span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>);
-    <span class="hljs-type">string</span> <span class="hljs-variable">datestr</span> <span class="hljs-operator">=</span><span class="hljs-string">&quot;2023-12-31 23:59:59&quot;</span>;
-    <span class="hljs-type">Date</span> <span class="hljs-variable">date</span> <span class="hljs-operator">=</span> sdf.parse(datestr);
-    
-    <span class="hljs-type">string</span> <span class="hljs-variable">yearLowercase</span> <span class="hljs-operator">=</span> sdf.format(date); <span class="hljs-comment">// 使用小写的yyyy格式获取当前年份</span>
-    System.err.println(<span class="hljs-string">&quot;Lowercase: &quot;</span> + yearLowercase);
-    
-    <span class="hljs-type">SimpleDateFormat</span> <span class="hljs-variable">sdf2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>( pattern: <span class="hljs-string">&quot;YYYY-MM-dd HH:mm:ss&quot;</span>);
-    <span class="hljs-type">string</span> <span class="hljs-variable">yearUppercase</span> <span class="hljs-operator">=</span> sdf2.format(date); <span class="hljs-comment">// 使用大写的YYYY格式获取当前基于周的年份</span>
-    System.err.println(<span class="hljs-string">&quot;Uppercase: &quot;</span> + yearUppercase);
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>背景是公司要改一个实时查询大量数据并统计的报表接口，原本接口只展示当天到30天内的订单数据，但是需求变更为最多90天的数据，且源数据获取难度变大，需要多两张表去做。这也就导致直接复杂SQL出来的结果虽然能满足数据需求，但是不能满足性能需求，大量数据查询时间最多到达100+秒，优先尝试SQL优化效果都达不到要求。因为需要实时性，所以我试着采用了多线程拆分查询最后去合并数据的方式满足性能需求。</p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>使用Callable和Future接口实现三个线程分开操作，之后再将三个线程的任务提交执行，这样就可以获取到全部接口之后再进行下一步的汇总统计操作。</p>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;
+    <span class="hljs-type">ExecutorService</span> <span class="hljs-variable">executor</span> <span class="hljs-operator">=</span> Executors.newFixedThreadPool(<span class="hljs-number">3</span>);
+
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-comment">// 定义查询任务</span>
+        Callable&lt;List&lt;Result&gt;&gt; queryPart1 = () -&gt; executeQueryPart1();
+        Callable&lt;List&lt;Result&gt;&gt; queryPart2 = () -&gt; executeQueryPart2();
+        Callable&lt;List&lt;Result&gt;&gt; queryPart3 = () -&gt; executeQueryPart3();
+
+        <span class="hljs-comment">// 构建任务列表</span>
+        List&lt;Callable&lt;List&lt;Result&gt;&gt;&gt; queryTasks = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+        queryTasks.add(queryPart1);
+        queryTasks.add(queryPart2);
+        queryTasks.add(queryPart3);
+
+        <span class="hljs-comment">// 执行查询任务</span>
+        List&lt;Future&lt;List&lt;Result&gt;&gt;&gt; futures = executor.invokeAll(queryTasks);
+
+        <span class="hljs-comment">// 收集和处理结果</span>
+        List&lt;Result&gt; allResults = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+        <span class="hljs-keyword">for</span> (Future&lt;List&lt;Result&gt;&gt; future : futures) &#123;
+            allResults.addAll(future.get());
+        &#125;
+        processCombinedResult(allResults);
+
+    &#125; <span class="hljs-keyword">catch</span> (InterruptedException | ExecutionException e) &#123;
+        e.printStackTrace();
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        <span class="hljs-comment">// 关闭线程池</span>
+        executor.shutdown();
+    &#125;
+&#125;
+
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;Result&gt; <span class="hljs-title function_">executeQueryPart1</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-comment">// 执行查询的第一个部分</span>
+    <span class="hljs-comment">// 返回结果列表</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+&#125;
+
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;Result&gt; <span class="hljs-title function_">executeQueryPart2</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-comment">// 执行查询的第二个部分</span>
+    <span class="hljs-comment">// 返回结果列表</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+&#125;
+
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;Result&gt; <span class="hljs-title function_">executeQueryPart3</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-comment">// 执行查询的第三个部分</span>
+    <span class="hljs-comment">// 返回结果列表</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+&#125;
+
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">processCombinedResult</span><span class="hljs-params">(List&lt;Result&gt; results)</span> &#123;
+    <span class="hljs-comment">// 处理合并后的结果</span>
 &#125;</code></pre></div>
 
-<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>out:</p>
-<div class="code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">Lowercase</span>: <span class="hljs-number">2023</span>-<span class="hljs-number">12</span>-<span class="hljs-number">31</span> <span class="hljs-number">23</span>:<span class="hljs-number">59</span>:<span class="hljs-number">59</span>
-<span class="hljs-attribute">Uppercase</span>: <span class="hljs-number">2024</span>-<span class="hljs-number">12</span>-<span class="hljs-number">31</span> <span class="hljs-number">23</span>:<span class="hljs-number">59</span>:<span class="hljs-number">59</span></code></pre></div>
-
-<blockquote>
-<p>很明显，使用YYYY时，2023年变成了2024年，在正常情况下可能没问题，但是在跨年的时候大概率就会有问题了。</p>
-</blockquote>
-<blockquote>
-<p><strong>查找了一下资料，原因比较简单，与小写的yyyy不同，大写的YYYY表示一个基于周的年份。它是根据周计算的年份，而不是基于日历的年份。通常情况下，两者的结果是相同的，但在跨年的第一周或最后一周可能会有差异。</strong></p>
-</blockquote>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
-<ol>
-<li>日期时间格式统一使用yyyy小写；</li>
-<li>日期格式要规定大家都引用定义好的工具类，避免有人手误打错。</li>
-</ol>
-</blockquote>
+<p>此处具体需要多少个线程由实际业务决定。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>Callable和Future在Java并发编程中有着广泛的应用场景。下面是一些常见的应用场景：</p>
+<p>1、并行计算<br>使用Callable和Future可以方便地实现并行计算，将一个大任务拆分为多个小任务并在多个线程中并行执行。通过将计算任务分配给不同的线程，可以提高计算速度和系统的吞吐量。</p>
+<p>2、异步IO<br>在网络编程和文件处理等场景中，使用Callable和Future可以实现异步IO操作。可以将IO操作封装为Callable任务，并通过Future对象获取IO操作的结果。这样可以充分利用CPU资源，同时不会阻塞主线程。</p>
+<p>3、定时任务<br>使用Callable和Future可以实现定时任务的调度和执行。可以将需要定时执行的任务封装为Callable，并使用ScheduledExecutorService来定期执行任务。通过获取Future对象可以获取任务的执行结果或取消任务的执行。</p>
 
                 
               </div>
@@ -312,7 +343,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="category-chain-item">问题记录</a>
+  <a href="/categories/%E5%90%8E%E7%AB%AF/" class="category-chain-item">后端</a>
   
   
 
@@ -327,7 +358,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="print-no-link">#问题记录</a>
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
       
     </div>
   
@@ -339,8 +370,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>日期格式化YYYY可能出现的问题</div>
-      <div>http://lee-zhihao.gitee.io/2023/08/23/日期格式化YYYY可能出现的问题/</div>
+      <div>多线程拆分查询的实践</div>
+      <div>http://lee-zhihao.gitee.io/2024/02/01/多线程拆分查询的实践/</div>
     </div>
     <div class="license-meta">
       
@@ -352,7 +383,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年8月23日</div>
+          <div>2024年2月1日</div>
         </div>
       
       
@@ -384,9 +415,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/23/%E6%B5%85%E8%B0%88%E8%AE%BE%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%8E%A5%E5%8F%A3%E5%AF%B9%E6%8E%A5%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/" title="浅谈设配器模式在多平台接口对接中的应用">
+                      <a href="/2024/02/23/%E5%AD%90%E6%9F%A5%E8%AF%A2%E5%92%8C%E8%81%94%E8%A1%A8%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/" title="子查询和联表查询的实际应用">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">浅谈设配器模式在多平台接口对接中的应用</span>
+                        <span class="hidden-mobile">子查询和联表查询的实际应用</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -394,8 +425,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/05/Oracle-HWM%E9%AB%98%E6%B0%B4%E4%BD%8D%E8%A7%A3%E8%AF%BB/" title="Oracle-HWM高水位解读">
-                        <span class="hidden-mobile">Oracle-HWM高水位解读</span>
+                      <a href="/2024/01/23/%E6%B5%85%E8%B0%88%E8%AE%BE%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%8E%A5%E5%8F%A3%E5%AF%B9%E6%8E%A5%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/" title="浅谈设配器模式在多平台接口对接中的应用">
+                        <span class="hidden-mobile">浅谈设配器模式在多平台接口对接中的应用</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
