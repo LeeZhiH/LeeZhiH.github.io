@@ -18,22 +18,22 @@
   <meta name="author" content="Li zhihao">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言在工作中有个需求是需要对接多个平台的同类型多个接口，且需求1.0只要求对接部分平台部分接口，后续按需对接，最开始看需求时只想到了用最原始的方式直接写接口和任务，但是后面编写的过程中发现对接多个平台接口许多操作本质上是一致的，却需要写多遍，且代码超级容易冗余，于是仔细思考了该如何优化这部分结构，最终想到的是类似适配器的模式，于是查了一些资料，加深了对该设计模式的了解。 一、什么是适配器模式适配器">
+    <meta name="description" content="前言最近看几个老项目的SQL条件中使用了1&#x3D;1，想想自己也曾经这样写过，略有感触，决定研究研究这个东西。 为什么会使用 1&#x3D;1？在动态构建SQL查询时，查询条件往往都是动态的，最终执行时可能会使用不同的条件。这时候，他们就会使用“1&#x3D;1”作为一个始终为真的条件，让接下来的所有条件都可以方便地用“AND”连接起来，就像是搭积木的时候先放一个基座，其他的积木块就都可以在这">
 <meta property="og:type" content="article">
-<meta property="og:title" content="浅谈设配器模式在多平台接口对接中的应用">
-<meta property="og:url" content="http://lee-zhihao.gitee.io/2024/01/23/%E6%B5%85%E8%B0%88%E8%AE%BE%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%8E%A5%E5%8F%A3%E5%AF%B9%E6%8E%A5%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:title" content="SQL中的1&#x3D;1">
+<meta property="og:url" content="http://lee-zhihao.gitee.io/2023/12/24/SQL%E4%B8%AD%E7%9A%841-1/index.html">
 <meta property="og:site_name" content="Lizhihao&#39;s Blog">
-<meta property="og:description" content="前言在工作中有个需求是需要对接多个平台的同类型多个接口，且需求1.0只要求对接部分平台部分接口，后续按需对接，最开始看需求时只想到了用最原始的方式直接写接口和任务，但是后面编写的过程中发现对接多个平台接口许多操作本质上是一致的，却需要写多遍，且代码超级容易冗余，于是仔细思考了该如何优化这部分结构，最终想到的是类似适配器的模式，于是查了一些资料，加深了对该设计模式的了解。 一、什么是适配器模式适配器">
+<meta property="og:description" content="前言最近看几个老项目的SQL条件中使用了1&#x3D;1，想想自己也曾经这样写过，略有感触，决定研究研究这个东西。 为什么会使用 1&#x3D;1？在动态构建SQL查询时，查询条件往往都是动态的，最终执行时可能会使用不同的条件。这时候，他们就会使用“1&#x3D;1”作为一个始终为真的条件，让接下来的所有条件都可以方便地用“AND”连接起来，就像是搭积木的时候先放一个基座，其他的积木块就都可以在这">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-01-23T09:15:07.000Z">
-<meta property="article:modified_time" content="2024-05-23T09:15:56.863Z">
+<meta property="article:published_time" content="2023-12-24T08:03:21.000Z">
+<meta property="article:modified_time" content="2024-05-24T08:04:29.592Z">
 <meta property="article:author" content="Li zhihao">
-<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>浅谈设配器模式在多平台接口对接中的应用 - Lizhihao&#39;s Blog</title>
+  <title>SQL中的1=1 - Lizhihao&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="浅谈设配器模式在多平台接口对接中的应用"></span>
+            <span id="subtitle" data-typed-text="SQL中的1=1"></span>
           
         </div>
 
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-23 17:15" pubdate>
-          2024年1月23日 下午
+        <time datetime="2023-12-24 16:03" pubdate>
+          2023年12月24日 下午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.1k 字
+          2.2k 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          27 分钟
+          19 分钟
         
       </span>
     
@@ -258,116 +258,56 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">浅谈设配器模式在多平台接口对接中的应用</h1>
+            <h1 id="seo-header">SQL中的1=1</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在工作中有个需求是需要对接多个平台的同类型多个接口，且需求1.0只要求对接部分平台部分接口，后续按需对接，最开始看需求时只想到了用最原始的方式直接写接口和任务，但是后面编写的过程中发现对接多个平台接口许多操作本质上是一致的，却需要写多遍，且代码超级容易冗余，于是仔细思考了该如何优化这部分结构，最终想到的是类似适配器的模式，于是查了一些资料，加深了对该设计模式的了解。</p>
-<h2 id="一、什么是适配器模式"><a href="#一、什么是适配器模式" class="headerlink" title="一、什么是适配器模式"></a>一、什么是适配器模式</h2><p>适配器模式是结构型设计模式之一。将一个类的接口转换成客户希望的另外一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以在一起工作。</p>
-<h2 id="二、模式的角色"><a href="#二、模式的角色" class="headerlink" title="二、模式的角色"></a>二、模式的角色</h2><p>目标接口（Target）：客户所期待的接口。目标可以是具体的或抽象的类，也可以是接口。（或者说标准，已经确定了的接口）</p>
-<p>需要适配的类（Adaptee）：需要适配的类或适配者类。（标准不能完成任务，需要通过适配新的类才能达到完成新的任务）</p>
-<p>适配器（Adapter）：通过包装一个需要适配的对象（Adaptee），把原接口转换成目标接口</p>
-<h2 id="三、模式的优缺点"><a href="#三、模式的优缺点" class="headerlink" title="三、模式的优缺点"></a>三、模式的优缺点</h2><p>该模式的主要优点如下。</p>
-<ul>
-<li>客户端通过适配器可以透明地调用目标接口。</li>
-<li>复用了现存的类，程序员不需要修改原有代码而重用现有的适配者类。</li>
-<li>将目标类和适配者类解耦，解决了目标类和适配者类接口不一致的问题。</li>
-<li>在很多业务场景中符合开闭原则。</li>
-</ul>
-<p>其缺点是：</p>
-<ul>
-<li>适配器编写过程需要结合业务场景全面考虑，可能会增加系统的复杂性。</li>
-<li>增加代码阅读难度，降低代码可读性，过多使用适配器会使系统代码变得凌乱。</li>
-</ul>
-<h2 id="四、实际应用举例"><a href="#四、实际应用举例" class="headerlink" title="四、实际应用举例"></a>四、实际应用举例</h2><p>我们假设存在两个外卖平台：饿了么（Eleme）和美团外卖（Meituan），它们提供的接口不同，我们需要将它们的配送范围接口适配为统一的接口。</p>
-<p>首先，我们定义接口<code>DeliveryRangeInterface</code>表示配送范围的操作，包括获取、修改、新增、删除：</p>
-<div class="code-wrapper"><pre><code class="hljs java">javapublic <span class="hljs-keyword">interface</span> <span class="hljs-title class_">DeliveryRangeInterface</span> &#123;
-    <span class="hljs-keyword">void</span> <span class="hljs-title function_">getDeliveryRange</span><span class="hljs-params">()</span>;
-    <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateDeliveryRange</span><span class="hljs-params">()</span>;
-    <span class="hljs-keyword">void</span> <span class="hljs-title function_">addDeliveryRange</span><span class="hljs-params">()</span>;
-    <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteDeliveryRange</span><span class="hljs-params">()</span>;
-&#125;</code></pre></div>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近看几个老项目的SQL条件中使用了1&#x3D;1，想想自己也曾经这样写过，略有感触，决定研究研究这个东西。</p>
+<h2 id="为什么会使用-1-1？"><a href="#为什么会使用-1-1？" class="headerlink" title="为什么会使用 1&#x3D;1？"></a>为什么会使用 1&#x3D;1？</h2><p>在动态构建SQL查询时，查询条件往往都是动态的，最终执行时可能会使用不同的条件。这时候，他们就会使用“1&#x3D;1”作为一个始终为真的条件，让接下来的所有条件都可以方便地用“AND”连接起来，就像是搭积木的时候先放一个基座，其他的积木块就都可以在这个基座上叠加。</p>
+<p>就像下边这样：</p>
+<div class="code-wrapper"><pre><code class="hljs ini">SELECT * FROM table WHERE <span class="hljs-attr">1</span>=<span class="hljs-number">1</span>
+&lt;if <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;username != null&quot;</span>&gt;
+    AND username = <span class="hljs-comment">#&#123;username&#125;</span>
+&lt;/if&gt;
+&lt;if <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;age &gt; 0&quot;</span>&gt;
+    AND age = <span class="hljs-comment">#&#123;age&#125;</span>
+&lt;/if&gt;</code></pre></div>
 
-<p>接着，我们实现饿了么和美团外卖的配送范围接口：</p>
-<div class="code-wrapper"><pre><code class="hljs java">javapublic <span class="hljs-keyword">class</span> <span class="hljs-title class_">ElemeDeliveryRange</span> &#123;
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">fetchElemeDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        <span class="hljs-comment">// Implementation for fetching Eleme delivery range</span>
-    &#125;
+<p>这样就不用在增加每个条件之前先判断是否需要添加“AND”。</p>
+<h2 id="1-1-带来的问题"><a href="#1-1-带来的问题" class="headerlink" title="1&#x3D;1 带来的问题"></a>1&#x3D;1 带来的问题</h2><h3 id="性能问题？"><a href="#性能问题？" class="headerlink" title="性能问题？"></a>性能问题？</h3><p>我们先来了解一下数据库查询优化器的工作原理。查询优化器就像是一个聪明的图书管理员，它知道如何最快地找到你需要的书籍。当你告诉它所需书籍的特征时，它会根据这些信息选择最快的检索路径。比如你要查询作者是“谭浩强”的书籍，它就选择先通过作者索引找到书籍索引，再通过书籍索引找到对应的书籍，而不是费力的把所有的书籍遍历一遍。</p>
+<p>但是，如果我们告诉它一些无关紧要的信息，比如“我要一本书，它是一本书”，这并不会帮助管理员更快地找到书，反而可能会让他觉得困惑。一个带有“1&#x3D;1”的查询可能会让数据库去检查每一条记录是否满足这个始终为真的条件，这就像是图书管理员不得不检查每一本书来确认它们都是书一样，显然是一种浪费。</p>
+<p>你可能会说：数据库没有这么傻吧？</p>
+<p>确实，这实际上可能不会产生问题，因为现代数据库的查询优化器已经非常智能，它们通常能够识别出像 1&#x3D;1 这样的恒真条件，并在执行查询计划时优化掉它们。在许多情况下，即使查询中包含了1&#x3D;1，数据库的性能也不会受到太大影响，优化器会在实际执行查询时将其忽略。</p>
+<p>但是优化器并不是万能的。在某些复杂的查询场景中，即使是简单的 1&#x3D;1 也可能对优化器的决策造成不必要的影响，比如导致全表扫描。</p>
+<h3 id="代码质量"><a href="#代码质量" class="headerlink" title="代码质量"></a>代码质量</h3><p>另外从代码质量的角度，我们也需要避免在查询中包含 1&#x3D;1，有以下几点考虑：</p>
+<ol>
+<li><strong>代码清晰性</strong>：即使数据库可以优化掉这样的条件，但对于阅读SQL代码的人来说，1&#x3D;1可能会造成困惑。代码的可读性和清晰性非常重要，特别是在团队协作的环境中。</li>
+<li><strong>习惯养成</strong>：即使在当前的数据库系统中1&#x3D;1不会带来性能问题，习惯了写不必要的代码可能会在其他情况下引入实际的性能问题。比如，更复杂的无用条件可能不会那么容易被优化掉。</li>
+<li><strong>跨数据库兼容性</strong>：不同的数据库管理系统（DBMS）可能有不同的优化器能力。一个系统可能轻松优化掉1&#x3D;1，而另一个系统则可能不那么高效。编写不依赖于特定优化器行为的SQL语句是一个好习惯。</li>
+</ol>
+<p>编写尽可能高效、清晰和准确的SQL语句，不仅有助于保持代码的质量，也让代码具有更好的可维护性和可扩展性。</p>
+<h2 id="替代-1-1-的更佳做法"><a href="#替代-1-1-的更佳做法" class="headerlink" title="替代 1&#x3D;1 的更佳做法"></a>替代 1&#x3D;1 的更佳做法</h2><p>现在开发者普遍使用ORM框架来操作数据库了，还在完全手写拼SQL的同学可能需要反思下了，这里给两个不同ORM框架下替代1&#x3D;1的方法。</p>
+<p>假设我们有一个用户信息表 user，并希望根据传入的参数动态地过滤用户。</p>
+<p>首先是<strong>Mybatis</strong>：</p>
+<div class="code-wrapper"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- MyBatis映射文件片段 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectUsersByConditions&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;map&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;com.example.User&quot;</span>&gt;</span>
+  SELECT * FROM user
+  <span class="hljs-tag">&lt;<span class="hljs-name">where</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- 使用if标签动态添加条件 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;username != null and username != &#x27;&#x27;&quot;</span>&gt;</span>
+      AND username = #&#123;username&#125;
+    <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;age &gt; 0&quot;</span>&gt;</span>
+      AND age = #&#123;age&#125;
+    <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- 更多条件... --&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">where</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre></div>
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateElemeDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        <span class="hljs-comment">// Implementation for updating Eleme delivery range</span>
-    &#125;
-
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">insertElemeDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        <span class="hljs-comment">// Implementation for inserting Eleme delivery range</span>
-    &#125;
-
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">removeElemeDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        <span class="hljs-comment">// Implementation for removing Eleme delivery range</span>
-    &#125;
-&#125;
-
-<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MeituanDeliveryRange</span> &#123;
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">fetchMeituanDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        <span class="hljs-comment">// Implementation for fetching Meituan delivery range</span>
-    &#125;
-
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateMeituanDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        <span class="hljs-comment">// Implementation for updating Meituan delivery range</span>
-    &#125;
-
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">insertMeituanDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        <span class="hljs-comment">// Implementation for inserting Meituan delivery range</span>
-    &#125;
-
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">removeMeituanDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        <span class="hljs-comment">// Implementation for removing Meituan delivery range</span>
-    &#125;
-&#125;</code></pre></div>
-
-<p>接下来，我们创建适配器类<code>DeliveryRangeAdapter</code>来适配两个外卖平台的接口：</p>
-<div class="code-wrapper"><pre><code class="hljs java">javapublic <span class="hljs-keyword">class</span> <span class="hljs-title class_">DeliveryRangeAdapter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">DeliveryRangeInterface</span> &#123;
-    <span class="hljs-keyword">private</span> ElemeDeliveryRange elemeDeliveryRange;
-    <span class="hljs-keyword">private</span> MeituanDeliveryRange meituanDeliveryRange;
-
-    <span class="hljs-keyword">public</span> <span class="hljs-title function_">DeliveryRangeAdapter</span><span class="hljs-params">(ElemeDeliveryRange elemeDeliveryRange, MeituanDeliveryRange meituanDeliveryRange)</span> &#123;
-        <span class="hljs-built_in">this</span>.elemeDeliveryRange = elemeDeliveryRange;
-        <span class="hljs-built_in">this</span>.meituanDeliveryRange = meituanDeliveryRange;
-    &#125;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        elemeDeliveryRange.fetchElemeDeliveryRange();
-        meituanDeliveryRange.fetchMeituanDeliveryRange();
-        <span class="hljs-comment">// 合并结果集</span>
-    &#125;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        elemeDeliveryRange.updateElemeDeliveryRange();
-        meituanDeliveryRange.updateMeituanDeliveryRange();
-        <span class="hljs-comment">// 合并结果集</span>
-    &#125;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        elemeDeliveryRange.insertElemeDeliveryRange();
-        meituanDeliveryRange.insertMeituanDeliveryRange();
-        <span class="hljs-comment">// 合并结果集</span>
-    &#125;
-
-    <span class="hljs-meta">@Override</span>
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteDeliveryRange</span><span class="hljs-params">()</span> &#123;
-        elemeDeliveryRange.removeElemeDeliveryRange();
-        meituanDeliveryRange.removeMeituanDeliveryRange();
-        <span class="hljs-comment">// 合并结果集</span>
-    &#125;
-&#125;</code></pre></div>
-
-<p>使用适配器模式，我们可以通过<code>DeliveryRangeAdapter</code>适配不同外卖平台的接口，使其符合<code>DeliveryRangeInterface</code>的规范，实现对接各大外卖平台配送范围的统一操作。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​	使用适配器模式用于将一个类的接口转换为另一个接口，以满足客户端的期望，主要解决了两个已有接口之间不兼容的问题，使得他们能够协同工作而无需修改已有代码。</p>
-<p>   在实际使用中，如果遇到需要对接第三方服务接口，且第三方接口与本地接口不兼容时，可以考虑使用该设计模式将接口转化为我们的期望，或是在对接多方服务时，本地接口与第三方接口差异性大，考虑后续拓展对接问题，可以提前考虑问题，将代码结构设计好，方便后续拓展与修改，从而做到无缝集成。</p>
+<p>在 MyBatis 中，避免使用 1&#x3D;1 的典型方法是利用动态SQL标签（如 <code>&lt;if&gt;</code>）来构建条件查询。<code>&lt;where&gt;</code> 标签会自动处理首条条件前的 AND 或 OR。当没有满足条件的 <code>&lt;if&gt;</code> 或其他条件标签时，<code>&lt;where&gt;</code> 标签内部的所有内容都会被忽略，从而不会生成多余的 AND 或 WHERE 子句。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>“1&#x3D;1”在SQL语句中可能看起来无害，但实际上它是一种不良的编程习惯，可能会导致性能下降。就像在做饭时不会无缘无故地多加调料一样，我们在编写SQL语句时也应该避免添加无意义的条件。</p>
+<p>每一行代码都应该有它存在的理由，不要让人和数据库浪费时间在不必要的事情上。</p>
 
                 
               </div>
@@ -386,7 +326,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%90%8E%E7%AB%AF/" class="category-chain-item">后端</a>
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
   
   
 
@@ -401,7 +341,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="print-no-link">#设计模式</a>
+        <a href="/tags/SQL/" class="print-no-link">#SQL</a>
       
     </div>
   
@@ -413,8 +353,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>浅谈设配器模式在多平台接口对接中的应用</div>
-      <div>http://lee-zhihao.gitee.io/2024/01/23/浅谈设配器模式在多平台接口对接中的应用/</div>
+      <div>SQL中的1=1</div>
+      <div>http://lee-zhihao.gitee.io/2023/12/24/SQL中的1-1/</div>
     </div>
     <div class="license-meta">
       
@@ -426,7 +366,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年1月23日</div>
+          <div>2023年12月24日</div>
         </div>
       
       
@@ -458,9 +398,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/02/01/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%8B%86%E5%88%86%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E8%B7%B5/" title="多线程拆分查询的实践">
+                      <a href="/2024/01/23/%E6%B5%85%E8%B0%88%E8%AE%BE%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%8E%A5%E5%8F%A3%E5%AF%B9%E6%8E%A5%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/" title="浅谈设配器模式在多平台接口对接中的应用">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">多线程拆分查询的实践</span>
+                        <span class="hidden-mobile">浅谈设配器模式在多平台接口对接中的应用</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -468,8 +408,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/24/SQL%E4%B8%AD%E7%9A%841-1/" title="SQL中的1=1">
-                        <span class="hidden-mobile">SQL中的1=1</span>
+                      <a href="/2023/11/24/Spring-Boot%E7%AC%94%E8%AE%B0/" title="Spring Boot笔记">
+                        <span class="hidden-mobile">Spring Boot笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
