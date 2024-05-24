@@ -1,0 +1,786 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Li zhihao">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、命名风格 【强制】类名使用 UpperCamelCase 风格，必须遵从驼峰形式，但以下情形例外：DO &#x2F; BO &#x2F; DTO &#x2F; VO &#x2F; AO 正例：MarcoPolo &#x2F; UserDO &#x2F; XmlService &#x2F; TcpUdpDeal &#x2F; TaPromotion 反例：macroPolo &#x2F; Use">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码规范的记录">
+<meta property="og:url" content="http://lee-zhihao.gitee.io/2023/09/13/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E7%9A%84%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Lizhihao&#39;s Blog">
+<meta property="og:description" content="一、命名风格 【强制】类名使用 UpperCamelCase 风格，必须遵从驼峰形式，但以下情形例外：DO &#x2F; BO &#x2F; DTO &#x2F; VO &#x2F; AO 正例：MarcoPolo &#x2F; UserDO &#x2F; XmlService &#x2F; TcpUdpDeal &#x2F; TaPromotion 反例：macroPolo &#x2F; Use">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-09-13T08:16:31.000Z">
+<meta property="article:modified_time" content="2024-05-24T08:26:23.445Z">
+<meta property="article:author" content="Li zhihao">
+<meta property="article:tag" content="代码规范">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>代码规范的记录 - Lizhihao&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"lee-zhihao.gitee.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Lizhihao&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/8.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="代码规范的记录"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-09-13 16:16" pubdate>
+          2023年9月13日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          63 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">代码规范的记录</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、命名风格"><a href="#一、命名风格" class="headerlink" title="一、命名风格"></a>一、命名风格</h2><ol>
+<li><p>【强制】类名使用 UpperCamelCase 风格，必须遵从驼峰形式，但以下情形例外：DO &#x2F; BO &#x2F; DTO &#x2F; VO &#x2F; AO</p>
+<p>正例：MarcoPolo &#x2F; UserDO &#x2F; XmlService &#x2F; TcpUdpDeal &#x2F; TaPromotion<br> 反例：macroPolo &#x2F; UserDo &#x2F; XMLService &#x2F; TCPUDPDeal &#x2F; TAPromotion</p>
+</li>
+<li><p>【强制】方法名、参数名、成员变量、局部变量都统一使用 lowerCamelCase 风格，必须遵从 驼峰形式。</p>
+<p>正例： localValue &#x2F; getHttpMessage() &#x2F; inputUserId</p>
+</li>
+<li><p>【强制】常量命名全部大写，单词间用下划线隔开，力求语义表达完整清楚，不要嫌名字长。</p>
+<p>正例：MAX_STOCK_COUNT 反例：MAX_COUNT</p>
+</li>
+<li><p>【强制】抽象类命名使用 Abstract 或 Base 开头；异常类命名使用 Exception 结尾；测试类命名以它要测试的类的名称开始，以 Test 结尾。</p>
+</li>
+<li><p>【强制】Model 类中布尔类型的变量，都不要加 is，否则部分框架解析会引起序列化错误。</p>
+<p>反例：定义为基本数据类型 Boolean isDeleted；的属性，它的方法也是 isDeleted()，RPC框架在反向解析的时候，“以为”对应的属性名称是 deleted，导致属性获取不到，进而抛出异常。</p>
+</li>
+<li><p>【强制】对于 Service 和 DAO 类，基于 SOA 的理念，暴露出来的服务一定是接口，内部的实现类用 Impl 的后缀与接口区别。 正例：CacheManagerImpl 实现 CacheManager 接口。</p>
+</li>
+<li><p>【推荐】为了达到代码自解释的目标，任何自定义编程元素在命名时，使用尽量完整的单词组合来表达其意。</p>
+</li>
+</ol>
+<p>正例：从远程仓库拉取代码的类命名为PullCodeFromRemoteRepository<br> 反例：变量int a;的随意命名方式。</p>
+<ol>
+<li>【推荐】接口类中的方法和属性不要加任何修饰符号（public 也不要加），保持代码的简洁 性，并加上有效 的Javadoc 注释。尽量不要在接口里定义变量，如果一定要定义变量，肯定是 与接口方法相关，并且是整个应用的基础常量。</li>
+</ol>
+<p>正例：接口方法签名：void f(); 接口基础常量表示：String COMPANY &#x3D; “alibaba”;<br> 反例：接口方法定义：public abstract void f();<br> 说明：JDK8 中接口允许有默认实现，那么这个default方法，是对所有实现类都有价值的默 认实现。</p>
+<ol>
+<li>【参考】枚举类名建议带上 Enum 后缀，枚举成员名称需要全大写，单词间用下划线隔开。<br> 说明：枚举其实就是特殊的常量类，且构造方法被默认强制是私有。<br> 正例：枚举名字为 ProcessStatusEnum 的成员名称：SUCCESS &#x2F; UNKOWN_REASON。</li>
+<li>【参考】各层命名规约：<br> A) Service&#x2F;DAO 层方法命名规约<br> 1） 获取单个对象的方法用 get 做前缀。<br> 2） 获取多个对象的方法用 list 做前缀。<br> 3） 获取统计值的方法用 count 做前缀。<br> 4） 插入的方法用 save&#x2F;insert 做前缀。<br> 5） 删除的方法用 remove&#x2F;delete 做前缀。<br> 6） 修改的方法用 update 做前缀。</li>
+</ol>
+<h2 id="二、变量定义"><a href="#二、变量定义" class="headerlink" title="二、变量定义"></a>二、变量定义</h2><ol>
+<li>【推荐】不要使用一个常量类维护所有常量，按常量功能进行归类，分开维护。 说明：大而全的常量类，非得使用查找功能才能定位到修改的常量，不利于理解和维护。</li>
+</ol>
+<p>正例：缓存相关常量放在类 CacheConsts 下；系统配置相关常量放在类 ConfigConsts 下。</p>
+<h2 id="三、代码格式"><a href="#三、代码格式" class="headerlink" title="三、代码格式"></a>三、代码格式</h2><p>【强制】大括号的使用约定。如果是大括号内为空，则简洁地写成{}即可，不需要换行；如果 是非空代码块则：<br> 1） 左大括号前不换行。<br> 2） 左大括号后换行。<br> 3） 右大括号前换行。<br> 4） 右大括号后还有 else 等代码则不换行 表示终止的右大括号后必须换行。</p>
+<p>【强制】 左小括号和字符之间不出现空格；同样，右小括号和字符之间也不出现空格。<br> 反例：if (空格a &#x3D;&#x3D; b空格)</p>
+<p>【强制】if&#x2F;for&#x2F;while&#x2F;switch&#x2F;do 等保留字与括号之间都必须加空格。</p>
+<p>【强制】任何二目、三目运算符的左右两边都需要加一个空格。<br> 说明：运算符包括赋值运算符&#x3D;、逻辑运算符&amp;&amp;、加减乘除符号等。</p>
+<p>【强制】采用 4 个空格缩进，禁止使用 tab 字符。<br> 说明：Vue工程采用2个空格缩进</p>
+<p>【强制】注释的双斜线与注释内容之间有且仅有一个空格。<br> 正例：&#x2F;&#x2F; 注释内容，注意在&#x2F;&#x2F;和注释内容之间有一个空格。</p>
+<p>【强制】方法参数在定义和传入时，多个参数逗号后边必须加空格。<br> 正例：下例中实参的”a”,后边必须要有一个空格。method(“a”, “b”, “c”);</p>
+<p>【强制】IDE 的 text file encoding 设置为 UTF-8; IDE 中文件的换行符使用 Unix 格式，不要使用 Windows 格式。</p>
+<p>【推荐】方法体内的执行语句组、变量的定义语句组、不同的业务逻辑之间或者不同的语义之间插入一个空行。相同业务逻辑和语义之间不需要插入空行。<br> 说明：没有必要插入多个空行进行隔开。</p>
+<h2 id="四、OOP规约"><a href="#四、OOP规约" class="headerlink" title="四、OOP规约"></a>四、OOP规约</h2><ol>
+<li>【强制】所有的覆写方法，必须加@Override 注解。</li>
+<li>【强制】不能使用过时的类或方法。</li>
+<li>【强制】Object 的 equals 方法容易抛空指针异常，应使用常量或确定有值的对象来调用 equals。<br> 正例：”test”.equals(object);<br> 反例：object.equals(“test”);</li>
+<li>【强制】所有的相同类型的包装类对象之间值的比较，全部使用 equals 方法比较。<br> 说明：对于 Integer var &#x3D; ? 在-128 至 127 范围内的赋值，Integer 对象是在IntegerCache.cache 产生，会复用已有对象，这个区间内的 Integer 值可以直接使用&#x3D;&#x3D;进行判断，但是这个区间之外的所有数据，都会在堆上产生，并不会复用已有对象，这是一个大坑， 推荐使用 equals 方法进行判断。</li>
+<li>【强制】RPC 方法的返回值和参数必须使用包装数据类型。</li>
+<li>【强制】构造方法里面禁止加入任何业务逻辑，如果有初始化逻辑，请放在 init 方法中。</li>
+<li>【推荐】当一个类有多个构造方法，或者多个同名方法，这些方法应该按顺序放置在一起， 便于阅读。</li>
+<li>【推荐】循环体内，字符串的连接方式，使用 StringBuilder 的 append 方法进行扩展。 说明：反编译出的字节码文件显示每次循环都会 new 出一个 StringBuilder 对象，然后进行 append 操作，最后通过 toString 方法返回 String 对象，造成内存资源浪费。<br> 反例：</li>
+</ol>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">str</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;start&quot;</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">100</span>; i++) &#123;
+  str = str + <span class="hljs-string">&quot;hello&quot;</span>;
+  &#125;</code></pre></div>
+
+<ol>
+<li>【推荐】慎用 Object 的 clone 方法来拷贝对象。 说明：对象的 clone 方法默认是浅拷贝，若想实现深拷贝需要重写 clone 方法实现属性对象 的拷贝。</li>
+</ol>
+<h2 id="五、集合处理"><a href="#五、集合处理" class="headerlink" title="五、集合处理"></a>五、集合处理</h2><ol>
+<li>【强制】使用集合转数组的方法，必须使用集合的 toArray(T[] array)，传入的是类型完全一样的数组，大小就是 list.size()。<br> 说明：使用 toArray 带参方法，入参分配的数组空间不够大时，toArray 方法内部将重新分配 内存空间，并返回新数组地址；如果数组元素大于实际所需，下标为[ list.size() ]的数组 元素将被置为 null，其它数组元素保持原值，因此最好将方法入参数组大小定义与集合元素 个数一致。 正例：</li>
+</ol>
+<div class="code-wrapper"><pre><code class="hljs java">List&lt;String&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;String&gt;(<span class="hljs-number">2</span>);
+list.add(<span class="hljs-string">&quot;guan&quot;</span>);
+list.add(<span class="hljs-string">&quot;bao&quot;</span>);
+String[] array = <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[list.size()];
+array = list.toArray(array);</code></pre></div>
+
+<p>反例：直接使用 toArray 无参方法存在问题，此方法返回值只能是 Object[]类，若强转其它 类型数组将出现 ClassCastException 错误。</p>
+<ol>
+<li>【强制】不要在 foreach 循环里进行元素的 remove&#x2F;add 操作。remove 元素请使用 Iterator方式，如果并发操作，需要对 Iterator 对象加锁。<br> 正例：</li>
+</ol>
+<div class="code-wrapper"><pre><code class="hljs java">Iterator&lt;String&gt; iterator = list.iterator();
+  <span class="hljs-keyword">while</span> (iterator.hasNext()) &#123;
+      <span class="hljs-type">String</span> <span class="hljs-variable">item</span> <span class="hljs-operator">=</span> iterator.next();
+      <span class="hljs-keyword">if</span> (删除元素的条件) &#123;
+        iterator.remove();
+      &#125;
+  &#125;</code></pre></div>
+
+<p>反例：</p>
+<div class="code-wrapper"><pre><code class="hljs java">List&lt;String&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;String&gt;();
+  list.add(<span class="hljs-string">&quot;1&quot;</span>);
+  list.add(<span class="hljs-string">&quot;2&quot;</span>);
+  <span class="hljs-keyword">for</span> (String item : list) &#123;
+    <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;1&quot;</span>.equals(item)) &#123;
+      list.remove(item);
+    &#125;
+  &#125;</code></pre></div>
+
+<ol>
+<li>【推荐】使用 entrySet 遍历 Map 类集合 KV，而不是 keySet 方式进行遍历。</li>
+</ol>
+<h2 id="六、控制语句"><a href="#六、控制语句" class="headerlink" title="六、控制语句"></a>六、控制语句</h2><ol>
+<li>【强制】在一个 switch 块内，每个 case 要么通过 break&#x2F;return 等来终止，要么注释说明程序将继续执行到哪一个 case 为止；在一个 switch 块内，都必须包含一个 default 语句并且 放在最后，即使它什么代码也没有。</li>
+<li>【强制】在 if&#x2F;else&#x2F;for&#x2F;while&#x2F;do 语句中必须使用大括号。即使只有一行代码，避 单行的编码方式：if (condition) statements;</li>
+<li>【推荐】除常用方法（如 getXxx&#x2F;isXxx）等外，不要在条件判断中执行其它复杂的语句，将复 杂逻辑判断的结果赋值给一个有意义的布尔变量名，以提高可读性。 说明：很多 if 语句内的逻辑相当复杂，阅读者需要分析条件表达式的最终结果，才能明确什么 样的条件执行什么样的语句，那么，如果阅读者分析逻辑表达式错误呢？<br> 正例： &#x2F;&#x2F; 伪代码如下</li>
+</ol>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> <span class="hljs-variable">existed</span> <span class="hljs-operator">=</span> (file.open(fileName, <span class="hljs-string">&quot;w&quot;</span>) != <span class="hljs-literal">null</span>) &amp;&amp; (...) || (...);
+<span class="hljs-keyword">if</span> (existed) &#123;
+  ...
+&#125;</code></pre></div>
+
+<p>反例：</p>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">if</span> ((file.open(fileName, <span class="hljs-string">&quot;w&quot;</span>) != <span class="hljs-literal">null</span>) &amp;&amp; (...) || (...)) &#123;
+  ...
+&#125;</code></pre></div>
+
+<ol>
+<li>【推荐】循环体中的语句要考量性能，以下操作尽量移至循环体外处理，如定义对象、变量、 获取数据库连接，进行不必要的 try-catch 操作（这个 try-catch 是否可以移至循环体外）。</li>
+<li>【参考】下列情形，需要进行参数校验：<br> 1） 调用频次低的方法。<br> 2） 执行时间开销很大的方法。此情形中，参数校验时间几乎可以忽略不计，但如果因为参 数错误导致中间执行回退，或者错误，那得不偿失。<br> 3） 需要极高稳定性和可用性的方法。<br> 4） 对外提供的开放接口，不管是 RPC&#x2F;API&#x2F;HTTP 接口。 5） 敏感权限入口。</li>
+</ol>
+<h2 id="七、注释规约"><a href="#七、注释规约" class="headerlink" title="七、注释规约"></a>七、注释规约</h2><p>【强制】类、类属性、类方法的注释必须使用 Javadoc 规范，使用&#x2F;*<em>内容</em>&#x2F; 格式，不得使用 &#x2F;&#x2F; xxx 方式。</p>
+<p>【强制】所有的抽象方法（包括接口中的方法）必须要用 Javadoc 注释、除了返回值、参数、 异常说明外，还必须指出该方法做什么事情，实现什么功能。 说明：对子类的实现要求，或者调用注意事项，请一并说明。</p>
+<p>【强制】所有的类都必须添加创建者和创建日期。</p>
+<p>【强制】方法内部单行注释，在被注释语句上方另起一行，使用&#x2F;&#x2F;注释。方法内部多行注释 使用&#x2F;* *&#x2F;注释，注意与代码对齐。</p>
+<p>【强制】所有的枚举类型字段必须要有注释，说明每个数据项的用途。</p>
+<p>【推荐】代码修改的同时，注释也要进行相应的修改，尤其是参数、返回值、异常、核心逻辑 等的修改。 说明：代码与注释更新不同步，就像路网与导航软件更新不同步一样，如果导航软件严重滞后， 就失去了导航的意义。</p>
+<p>【参考】谨慎注释掉代码。在上方详细说明，而不是简单地注释掉。如果无用，则删除。</p>
+<p>【参考】对于注释的要求：第一、能够准确反应设计思想和代码逻辑；第二、能够描述业务含 义，使别的程序员能够迅速了解到代码背后的信息。完全没有注释的大段代码对于阅读者形同 天书，注释是给自己看的，即使隔很长时间，也能清晰理解当时的思路；注释也是给继任者看 的，使其能够快速接替自己的工作。</p>
+<p>【参考】好的命名、代码结构是自解释的，注释力求精简准确、表达到位。避免出现注释的 一个极端：过多过滥的注释，代码的逻辑一旦修改，修改注释是相当大的负担。</p>
+<p>【参考】特殊注释标记，请注明标记人与标记时间。注意及时处理这些标记，通过标记扫描， 经常清理此类标记。线上故障有时候就是来源于这些标记处的代码。<br> 1） 待办事宜（TODO）:（ 标记人，标记时间，[预计处理时间]） 表示需要实现，但目前还未实现的功能。这实际上是一个 Javadoc 的标签，目前的 Javadoc 还没有实现，但已经被广泛使用。只能应用于类，接口和方法（因为它是一个 Javadoc 标签）。<br> 2） 错误，不能工作（FIXME）:（标记人，标记时间，[预计处理时间]） 在注释中用 FIXME 标记某代码是错误的，而且不能工作，需要及时纠正的情况。</p>
+<h2 id="八、其他"><a href="#八、其他" class="headerlink" title="八、其他"></a>八、其他</h2><p>【强制】在使用正则表达式时，利用好其预编译功能，可以有效加快正则匹配速度。 说明：不要在方法体内定义：Pattern pattern &#x3D; Pattern.compile(规则);</p>
+<p>【强制】注意 Math.random() 这个方法返回是 double 类型，注意取值的范围 0≤x&lt;1（能够 取到零值，注意除零异常），如果想获取整数类型的随机数，不要将 x 放大 10 的若干倍然后 取整，直接使用 Random 对象的 nextInt 或者 nextLong 方法。</p>
+<p>【强制】获取当前毫秒数 System.currentTimeMillis(); 而不是 new Date().getTime();</p>
+<p>【推荐】任何数据结构的构造或初始化，都应指定大小，避免数据结构无限增长吃光内存。</p>
+<h2 id="九、异常处理"><a href="#九、异常处理" class="headerlink" title="九、异常处理"></a>九、异常处理</h2><ol>
+<li>【强制】捕获异常是为了处理它，不要捕获了却什么都不处理而抛弃之，如果不想处理它，请 将该异常抛给它的调用者。最外层的业务使用者，必须处理异常，将其转化为用户可以理解的 内容。</li>
+<li></li>
+</ol>
+<h2 id="十、MySQL数据库"><a href="#十、MySQL数据库" class="headerlink" title="十、MySQL数据库"></a>十、MySQL数据库</h2><h4 id="建立表规约"><a href="#建立表规约" class="headerlink" title="建立表规约"></a>建立表规约</h4><p>【强制】表名、字段名必须使用小写字母或数字，禁止出现数字开头，禁止两个下划线中间只 出现数字。数据库字段名的修改代价很大，因为无法进行预发布，所以字段名称需要慎重考虑。<br> 说明：MySQL 在 Windows 下不区分大小写，但在 Linux 下默认是区分大小写。因此，数据库 名、表名、字段名，都不允许出现任何大写字母，避免节外生枝。<br> 正例：aliyun_admin，rdc_config，level3_name 反例：AliyunAdmin，rdcConfig，level_3_name</p>
+<p>【强制】禁用保留字，如 desc、range、match、delayed 等，请参考 MySQL 官方保留字。</p>
+<p>【强制】主键索引名为 pk_字段名；唯一索引名为 uk_字段名；普通索引名则为 idx_字段名。 说明：pk_ 即 primary key；uk_ 即 unique key；idx_ 即 index 的简称。</p>
+<p>【强制】小数类型为 decimal，禁止使用 float 和 double。</p>
+<p>【强制】如果存储的字符串长度几乎相等，使用 char 定长字符串类型。</p>
+<p>【强制】varchar 是可变长字符串，不预先分配存储空间，长度不要超过 5000，如果存储长度大于此值，定义字段类型为 text。</p>
+<p>【强制】表必备三个字段：id，create_time, update_time, delete_flag</p>
+<p>【强制】对于Boolean型的字段，采用decimal类型</p>
+<p>【强制】表和字段都需要添加注释信息。</p>
+<p>【推荐】单表行数超过 500 万行或者单表容量超过 2GB，才推荐进行分库分表。 说明：如果预计三年后的数据量根本达不到这个级别，请不要在创建表时就分库分表。</p>
+<p>【参考】合适的字符存储长度，不但节约数据库表空间、节约索引存储，更重要的是提升检 索速度。</p>
+<h4 id="索引规约"><a href="#索引规约" class="headerlink" title="索引规约"></a>索引规约</h4><p>【强制】不要使用 count(列名)或 count(常量)来替代 count(<em>)，count(</em>)是 SQL92 定义的 标准统计行数的语法，跟数据库无关，跟 NULL 和非 NULL 无关。<br> 说明：count(*)会统计值为 NULL 的行，而 count(列名)不会统计此列为 NULL 值的行。</p>
+<p>【强制】count(distinct col) 计算该列除 NULL 之外的不重复行数，注意 count(di col1, col2) 如果其中一列全为 NULL，那么即使另一列有不同的值，也返回为 0。</p>
+<p>【强制】当某一列的值全是 NULL 时，count(col)的返回结果为 0，但 sum(col)的返回结果为NULL.</p>
+<p>【强制】不得使用外键与级联，一切外键概念必须在应用层解决。</p>
+<p>【强制】禁止使用存储过程，存储过程难以调试和扩展，更没有移植性。</p>
+<p>【推荐】in 操作能避免则避免，若实在避免不了，需要仔细评估 in 后边的集合元素数量，控 制在 1000 个之内。</p>
+<p>【参考】如果有全球化需要，所有的字符存储与表示，均以 utf-8 编码，注意字符 的区别。<br> 说明： SELECT LENGTH(“轻松工作”)； 返回为 12 SELECT CHARACTER_LENGTH(“轻松工作”)； 返回为 4 如果需要存储表情，那么选择 utfmb4 来进行存储，注意它与 -8 编码的区别。</p>
+<p>【强制】更新数据表记录时，必须同时更新记录对应的 update_time 字段值为当前时间。</p>
+<p>【参考】@Transactional 事务不要滥用。事务会影响数据库的 QPS，另外使用事务的地方需 要考虑各方面的回滚方案，包括缓存回滚、搜索引擎回滚、消息补偿、统计修正等。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%90%8E%E7%AB%AF/" class="category-chain-item">后端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" class="print-no-link">#代码规范</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>代码规范的记录</div>
+      <div>http://lee-zhihao.gitee.io/2023/09/13/代码规范的记录/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Li zhihao</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/15/Spring-MVC%E7%AC%94%E8%AE%B0/" title="Spring MVC笔记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Spring MVC笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/23/%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E5%8C%96YYYY%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98/" title="日期格式化YYYY可能出现的问题">
+                        <span class="hidden-mobile">日期格式化YYYY可能出现的问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="#" target="_blank" rel="nofollow noopener"><span>Lizhihao</span></a> <i class="iconfont icon-love"></i> <a href="#" target="_blank" rel="nofollow noopener"><span>Blog</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
